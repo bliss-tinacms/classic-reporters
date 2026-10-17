@@ -1,0 +1,26 @@
+{
+  "headerNavigation": "",
+  "footerNavigation": "",
+  "seo": {
+    "title": "Classic Reporters",
+    "description": "Independent reporting, analysis, and accountability journalism from Cleveland and beyond.",
+    "siteOwner": "Andrew Bishop",
+    "logo": "https://res.cloudinary.com/qwdyyii2/image/upload/v1791209754/boilerplate/favicon.png",
+    "favicon": "/favicon.svg",
+    "footerLogo": ""
+  },
+  "contactForm": {
+    "formspreeEndpoint": "https://formspree.io/f/mzedolpq",
+    "heading": "Contact us",
+    "description": "Configure a unique Formspree endpoint for this site before enabling submissions.",
+    "buttonText": "Send Message",
+    "note": "This form remains disabled until its Formspree endpoint is configured.",
+    "subject": "Starter Site contact form submission"
+  },
+  "codeInjection": {
+    "headerCode": "",
+    "footerCode": ""
+  },
+  "contactLinks": [],
+  "footerStarfield": false
+}
