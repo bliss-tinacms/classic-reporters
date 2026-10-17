@@ -1,25 +1,10 @@
 {
-  "title": "Footer Menu",
+  "title": "Footer Navigation",
   "items": [
-    {
-      "label": "Home",
-      "href": "/"
-    },
-    {
-      "label": "About Us",
-      "href": "/about/"
-    },
-    {
-      "label": "Our Team",
-      "href": "/our-team/"
-    },
-    {
-      "label": "Contact Us",
-      "href": "/contact/"
-    },
-    {
-      "label": "Blog",
-      "href": "/blog/"
-    }
+    { "label": "About Us", "href": "/about/" },
+    { "label": "Our Team", "href": "/our-team/" },
+    { "label": "Contact Us", "href": "/contact/" },
+    { "label": "Editorial Guidelines", "href": "/editorial-guidelines/" },
+    { "label": "Write for Us", "href": "/write-for-us/" }
   ]
 }

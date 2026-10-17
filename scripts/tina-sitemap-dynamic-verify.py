@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify Starter Site sitemap dynamic data + SEO output.
+"""Verify Classic Reporters sitemap dynamic data + SEO output.
 
 Guard for the /sitemap/ route: compares Tina backend page/post collections to
 live public sitemap DOM and checks SEO/meta output. This prevents the sitemap
@@ -160,12 +160,12 @@ def main() -> int:
         if (url, text) not in live_links:
             failures.append(f"missing post link {url} {text!r}")
 
-    if "Sitemap | Starter Site" not in normalize(parser.title_text):
+    if "Sitemap | Classic Reporters" not in normalize(parser.title_text):
         failures.append(f"bad <title>: {parser.title_text!r}")
-    if "Browse the public pages and latest reporting published by Starter Site." not in parser.meta.get("description", ""):
+    if "Browse the public pages and latest reporting published by Classic Reporters." not in parser.meta.get("description", ""):
         failures.append("missing sitemap meta description")
     if "ffn-demo-sitemap" not in html or "sitemap-panel" not in html or "Big Shoulders Display" not in html:
-        failures.append("missing Starter Site sitemap branding markers")
+        failures.append("missing Classic Reporters sitemap branding markers")
     if f">{len(expected_pages)}<" not in html or f">{len(expected_posts)}<" not in html:
         failures.append("dynamic page/post counts not rendered")
     if "Tina content collections" not in live_text:

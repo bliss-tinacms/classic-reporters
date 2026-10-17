@@ -1,0 +1,4 @@
+/* Final mockup-contract layout corrections. */
+@media (min-width:851px){.ffn-demo-team .rs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.ffn-demo-team .rsi{grid-template-columns:160px minmax(0,1fr);align-items:start}.ffn-demo-team .alt .rsi{grid-template-columns:128px minmax(0,1fr)}}
+.ffn-demo-404 .er-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}.ffn-demo-404 .er-cta .sec{display:inline-flex;padding:11px 18px;border:1px solid #161412;border-radius:999px;color:#161412;font-weight:700}
+@media (max-width:600px){.ffn-demo-team .rsi-img{width:160px;height:160px;aspect-ratio:1;object-fit:cover}.ffn-demo-team .alt .rsi-img{width:128px;height:128px}.cr-team-grid img{aspect-ratio:1;object-fit:cover}}

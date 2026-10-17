@@ -43,7 +43,19 @@ const t = (value: unknown, fallback: string) => String(value || fallback);
     <section class="sc alt"><div class="w">
       <div class="eye"><i></i><span data-tina-field={tinaField(seniorStaff, 'eyebrow')}>{t(seniorStaff.eyebrow, 'Senior staff')}</span></div>
       <h2 class="h2" data-tina-field={tinaField(seniorStaff, 'title')}>{t(seniorStaff.title, 'More editors')}</h2>
-      <div class="rs">{seniorStaff.people.map((person: any) => <article class="rsi"><div><div class="rsi-hd"><div class="rsi-n" data-tina-field={tinaField(person, 'name')}>{person.name}</div><div class="rsi-r" data-tina-field={tinaField(person, 'role')}>{person.role}</div></div><p class="rsi-x" data-tina-field={tinaField(person, 'bio')}>{person.bio}</p></div></article>)}</div>
+      <div class="rs">{seniorStaff.people.map((person: any) => (
+        <article class="rsi">
+          {person.image ? <img class="rsi-img" src={person.image} alt={person.imageAlt || person.name || ''} data-tina-field={tinaField(person, 'image')} /> : <div class="rsi-img demo-img"></div>}
+          <div>
+            <div class="rsi-hd">
+              <div class="rsi-n" data-tina-field={tinaField(person, 'name')}>{person.name}</div>
+              <div class="rsi-r" data-tina-field={tinaField(person, 'role')}>{person.role}</div>
+            </div>
+            <p class="rsi-x" data-tina-field={tinaField(person, 'bio')}>{person.bio}</p>
+            <div class="rsi-f"><span data-tina-field={tinaField(person, 'location')}>{person.location}</span><span>{person.experience || 'Editorial desk'}</span><span>{person.focus || 'Daily coverage'}</span></div>
+          </div>
+        </article>
+      ))}</div>
     </div></section>
   )}
 

@@ -151,21 +151,21 @@ def main() -> int:
         "user": fetch_route("/author/admin/"),
     }
     config, page, blog, category, user = data["config"], data["page"], data["blog"], data["category"], data["user"]
-    site_title = config.get("seo", {}).get("title") or "Starter Site"
+    site_title = config.get("seo", {}).get("title") or "Classic Reporters"
     business_post_count = sum(
         1 for edge in (data.get("blogs", {}).get("edges") or [])
         if any(str(value).replace("\\", "/").lower().endswith("/business.json") for value in ((edge.get("node") or {}).get("categories") or []))
     )
     category_description = category.get("description") or (
-        f"Read the latest {category.get('title')} articles from Starter Site."
+        f"Read the latest {category.get('title')} articles from Classic Reporters."
         if business_post_count else
-        f"Articles in the {category.get('title')} category will be published soon on Starter Site."
+        f"Articles in the {category.get('title')} category will be published soon on Classic Reporters."
     )
     seo_results = {
         "page": assert_seo("page", routes["page"], page.get("seo"), page.get("title") or site_title, config.get("seo", {}).get("description") or "", f"{SITE}/", failures),
         "blog": assert_seo("blog", routes["blog"], blog.get("seo"), blog.get("title") or "", blog.get("description") or "", "/hca-warns-that-lost-health-coverage-is-increasing-pressure-on-hospitals/", failures),
         "category": assert_seo("category", routes["category"], category.get("seo"), f"{category.get('title')} Articles | {site_title}", category_description, "/business/", failures),
-        "user": assert_seo("user", routes["user"], user.get("seo"), f"{user.get('name')} Articles | {site_title}", user.get("bio") or f"Read the latest articles by {user.get('name')} from Starter Site.", "/author/admin/", failures),
+        "user": assert_seo("user", routes["user"], user.get("seo"), f"{user.get('name')} Articles | {site_title}", user.get("bio") or f"Read the latest articles by {user.get('name')} from Classic Reporters.", "/author/admin/", failures),
     }
     assert_text("blog.title", routes["blog"]["html"], blog.get("title") or "", failures)
     assert_text("category.title", routes["category"]["html"], category.get("title") or "", failures)

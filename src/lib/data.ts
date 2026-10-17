@@ -84,6 +84,13 @@ function readLocalFrontmatter(collection: 'blog' | 'page', slug?: string | null)
 			for (const key of ['pubDate', 'updatedDate']) {
 				if (data[key] instanceof Date) data[key] = data[key].toISOString();
 			}
+			if (collection === 'page' && Array.isArray(data.blocks)) {
+				data.blocks = data.blocks.map((block: any) =>
+					block?._template === 'content' && typeof block.body === 'string'
+						? { ...block, body: markdownToTinaRichText(block.body) }
+						: block,
+				);
+			}
 			return {
 				...data,
 				body: collection === 'blog' ? markdownToTinaRichText(parsed.content) : parsed.content || undefined,
@@ -249,7 +256,30 @@ async function fetchGithubPageFrontmatter(relativePath: string) {
 	}
 }
 
-async function fetchLiveTina<T>(query: string, variables?: Record<string, unknown>, pick?: (json: any) => T | null | undefined) {
+let tinaIdentityCache: { value: boolean; expires: number } | null = null;
+
+async function tinaIdentityMatchesLocalSite() {
+	if (tinaIdentityCache && tinaIdentityCache.expires > Date.now()) return tinaIdentityCache.value;
+	const localConfig = readLocalJson('config', 'config.json');
+	const expectedTitle = String(localConfig?.seo?.title || '').trim().toLowerCase();
+	const expectedLogo = String(localConfig?.seo?.logo || '').trim();
+	if (!expectedTitle) return true;
+	const query = `query SiteIdentity($relativePath: String!) { config(relativePath: $relativePath) { seo { title logo } } }`;
+	const liveIdentity = await fetchLiveTina(
+		query,
+		{ relativePath: 'config.json' },
+		(json) => json?.data?.config?.seo,
+		false,
+	);
+	const liveTitle = String((liveIdentity as any)?.title || '').trim().toLowerCase();
+	const liveLogo = String((liveIdentity as any)?.logo || '').trim();
+	const value = liveTitle === expectedTitle && (!expectedLogo || liveLogo === expectedLogo);
+	tinaIdentityCache = { value, expires: Date.now() + 30_000 };
+	return value;
+}
+
+async function fetchLiveTina<T>(query: string, variables?: Record<string, unknown>, pick?: (json: any) => T | null | undefined, verifyIdentity = true) {
+	if (verifyIdentity && !(await tinaIdentityMatchesLocalSite())) return null;
 	for (const endpoint of tinaProxyEndpoints()) {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), 30000);
@@ -279,6 +309,7 @@ async function fetchLiveTina<T>(query: string, variables?: Record<string, unknow
 }
 
 async function fetchLiveTinaResult<TData>(query: string, variables?: Record<string, unknown>) {
+	if (!(await tinaIdentityMatchesLocalSite())) return null;
 	for (const endpoint of tinaProxyEndpoints()) {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), 30000);
@@ -312,19 +343,24 @@ export async function getConfig() {
 			headerNavigation { ... on Navigation { _sys { relativePath } } }
 			footerNavigation { ... on Navigation { _sys { relativePath } } }
 			seo { title description siteOwner logo favicon footerLogo }
+			footer { description editorialEmail generalEmail companyHeading ctaText ctaButtonText ctaButtonLink }
 			contactForm { formspreeEndpoint heading description buttonText note subject }
 			codeInjection { headerCode footerCode }
 			contactLinks { title link icon }
 			footerStarfield
 		}
 	}`;
-	// Public rendering must prefer Tina Cloud so backend edits appear on the frontend
-	// like a real CMS. Local deployed JSON is only a fallback for outages/builds.
-	const liveConfig = await fetchLiveTina(query, { relativePath: 'config.json' }, (json) => json?.data?.config);
-	if (liveConfig) return { data: { config: liveConfig } } as any;
-
+	// Public rendering is Tina-first only when Cloud identifies itself as this
+	// exact site. A newly cloned project can temporarily remain connected to the
+	// source repository; accepting that stale config would leak source branding.
 	const localConfig = readLocalJson('config', 'config.json');
-	if (localConfig) return { data: { config: localConfig } } as any;
+	const liveConfig = await fetchLiveTina(query, { relativePath: 'config.json' }, (json) => json?.data?.config);
+	const localTitle = String(localConfig?.seo?.title || '').trim().toLowerCase();
+	const liveTitle = String(liveConfig?.seo?.title || '').trim().toLowerCase();
+	if (liveConfig && (!localTitle || liveTitle === localTitle)) {
+		return { data: { config: { ...liveConfig, _source: 'tina' } } } as any;
+	}
+	if (localConfig) return { data: { config: { ...localConfig, _source: 'local' } } } as any;
 	return requestWithMetadata(client.queries.config({ relativePath: 'config.json' }));
 }
 
@@ -363,7 +399,7 @@ function navigationRelativePath(reference: unknown) {
 	return '';
 }
 
-async function getLiveNavigation(relativePath: string) {
+async function getLiveNavigation(relativePath: string, preferLocal = false) {
 	if (!relativePath) return { data: { navigation: null } } as any;
 	const query = `query Navigation($relativePath: String!) {
 		navigation(relativePath: $relativePath) {
@@ -372,24 +408,33 @@ async function getLiveNavigation(relativePath: string) {
 		}
 	}`;
 
-	// Public navigation must also be CMS-live-first; local deployed JSON is fallback only.
+	const readLocalNavigation = () => {
+		try {
+			const filePath = join(process.cwd(), 'src', 'content', 'navigation', relativePath);
+			const navigation = JSON.parse(readFileSync(filePath, 'utf8'));
+			return navigation?.items ? navigation : null;
+		} catch (_error) {
+			return null;
+		}
+	};
+
+	// A local config identity means Tina is unavailable or still connected to the
+	// source repository. Keep its navigation paired with that same local config.
+	if (preferLocal) {
+		const navigation = readLocalNavigation();
+		if (navigation) return { data: { navigation } } as any;
+	}
+
 	const liveNavigation = await fetchLiveTina(query, { relativePath }, (json) => json?.data?.navigation);
 	if (liveNavigation) return { data: { navigation: liveNavigation } } as any;
 
-	try {
-		const filePath = join(process.cwd(), 'src', 'content', 'navigation', relativePath);
-		const navigation = JSON.parse(readFileSync(filePath, 'utf8'));
-		if (navigation?.items) return { data: { navigation } } as any;
-	} catch (_error) {
-		// Fall through to generated client.
-	}
-
+	const navigation = readLocalNavigation();
+	if (navigation) return { data: { navigation } } as any;
 	return requestWithMetadata(client.queries.navigation({ relativePath }));
 }
 
-export const getHeaderNavigation = (config?: any) => getLiveNavigation(navigationRelativePath(config?.headerNavigation) || 'header.json');
-
-export const getFooterNavigation = (config?: any) => getLiveNavigation(navigationRelativePath(config?.footerNavigation) || 'footer.json');
+export const getHeaderNavigation = (config?: any) => getLiveNavigation(navigationRelativePath(config?.headerNavigation) || 'header.json', config?._source === 'local');
+export const getFooterNavigation = (config?: any) => getLiveNavigation(navigationRelativePath(config?.footerNavigation) || 'footer.json', config?._source === 'local');
 
 
 
@@ -398,19 +443,33 @@ export const getPage = (slug: string) =>
 
 export const getEditablePage = async (slug: string) => {
 	const relativePath = slug.endsWith('.mdx') ? slug : `${slug}.mdx`;
-	// Use the authoritative Tina document directly so the Page island and the
-	// public SSR route read the same data. Do not let metadata enrichment turn a
-	// rejected generated request into an empty HTTP-200 form.
+	// Prefer the authoritative Tina document so public SSR and visual editing
+	// read the same saved data. When Cloud is temporarily unavailable, retain a
+	// query-bearing local fallback so the public route still renders and the
+	// island does not collapse the whole page to a 404.
 	const live = await fetchLiveTinaResult<{ page: any }>(PageDocument, { relativePath });
 	if (live?.data?.page) {
 		return requestWithMetadata(Promise.resolve(live), { priority: 'primary' });
 	}
 
-	const generated = await client.queries.page({ relativePath });
-	if (!generated?.data?.page || !generated.query || !generated.variables) {
-		throw new Error(`Page editor query returned no authoritative Tina document: ${relativePath}`);
+	try {
+		const generated = await client.queries.page({ relativePath });
+		if (generated?.data?.page && generated.query && generated.variables) {
+			return requestWithMetadata(generated, { priority: 'primary' });
+		}
+	} catch (_error) {
+		// Continue to the source fallback below.
 	}
-	return requestWithMetadata(generated, { priority: 'primary' });
+
+	const localPage = readLocalPageFrontmatter(relativePath);
+	if (localPage) {
+		return requestWithMetadata(Promise.resolve({
+			data: { page: localPage as any },
+			query: PageDocument,
+			variables: { relativePath },
+		}), { priority: 'primary' });
+	}
+	throw new Error(`Page editor query returned no Tina or local document: ${relativePath}`);
 };
 
 async function getLivePage(slug: string) {
@@ -591,6 +650,8 @@ export async function getCategory(slug: string) {
 		category(relativePath: $relativePath) {
 			title
 			description
+			featuredImage
+			featuredImageAlt
 			seo { metaTitle metaDescription ogTitle ogDescription ogImage canonicalUrl noindex nofollow }
 			_sys { filename }
 		}

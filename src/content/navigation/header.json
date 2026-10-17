@@ -1,33 +1,12 @@
 {
-  "title": "Header Navigation",
+  "title": "Primary Navigation",
   "items": [
-    {
-      "label": "Business",
-      "href": "/business/"
-    },
-    {
-      "label": "Technology",
-      "href": "/technology/"
-    },
-    {
-      "label": "Health",
-      "href": "/health/"
-    },
-    {
-      "label": "Politics",
-      "href": "/politics/"
-    },
-    {
-      "label": "World",
-      "href": "/world/"
-    },
-    {
-      "label": "Lifestyle",
-      "href": "/lifestyle/"
-    },
-    {
-      "label": "Featured",
-      "href": "/featured/"
-    }
+    { "label": "U.S. News", "href": "/us-news/" },
+    { "label": "World News", "href": "/world-news/" },
+    { "label": "Business", "href": "/business/" },
+    { "label": "Technology", "href": "/technology/" },
+    { "label": "Health", "href": "/health/" },
+    { "label": "Entertainment", "href": "/entertainment/" },
+    { "label": "Lifestyle", "href": "/lifestyle/" }
   ]
 }

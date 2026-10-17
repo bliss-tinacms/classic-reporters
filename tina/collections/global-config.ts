@@ -58,6 +58,19 @@ export const GlobalConfigCollection: Collection = {
       ],
     },
     {
+      name: "footer",
+      label: "Footer & Newsroom CTA",
+      type: "object",
+      fields: [
+        { name: "description", label: "Footer Description", type: "string", ui: { component: "textarea" } },
+        { name: "editorialEmail", label: "Editorial Email", type: "string" },
+        { name: "infoEmail", label: "General Email", type: "string" },
+        { name: "ctaTitle", label: "Newsroom CTA Heading", type: "string", ui: { component: "textarea" } },
+        { name: "ctaButtonText", label: "Newsroom CTA Button", type: "string" },
+        { name: "ctaButtonLink", label: "Newsroom CTA Link", type: "string" },
+      ],
+    },
+    {
       name: "contactForm",
       label: "Contact Form",
       type: "object",

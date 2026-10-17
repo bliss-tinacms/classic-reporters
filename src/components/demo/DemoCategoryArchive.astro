@@ -4,6 +4,7 @@ import { getBlogPermalink } from '../../lib/permalinks';
 import { labelFromReference, getAuthorName, getPostCategories } from './DemoHelpers';
 const { archiveTitle = 'Category', posts = [], currentPage = 1, totalPages = 1, basePath = '/', category = null, showCategoryBadge = true } = Astro.props;
 const lead = posts[0];
+const leadImage = category?.featuredImage || lead?.heroImage;
 const rest = posts.slice(1);
 const hasPosts = posts.length > 0;
 const hasBottomPosts = rest.length > 0;
@@ -19,7 +20,7 @@ const emptyBody = hasPosts
   <header class="ch"><div class="w"><div class="ch-in">{showCategoryBadge && <div class="ch-k"><b>Category</b></div>}<h1 data-tina-field={category ? tinaField(category, 'title') : undefined}>{archiveTitle}</h1></div></div></header>
   {lead && (
     <section class="ld"><div class="w"><a href={postUrl(lead)} class="ld-a">
-      {lead.heroImage ? <div class="ld-img" style={`background-image:url(${lead.heroImage})`}></div> : <div class="ld-img demo-img"></div>}
+      {leadImage ? <div class="ld-img" role="img" aria-label={category?.featuredImageAlt || lead?.heroImageAlt || ''} style={`background-image:url(${leadImage})`} data-tina-field={category?.featuredImage ? tinaField(category, 'featuredImage') : undefined}></div> : <div class="ld-img demo-img"></div>}
       <div class="ld-c"><span class="ld-k">Lead Story</span><div class="ld-h">{lead.title}</div>{lead.description && <p class="ld-x">{lead.description}</p>}<div class="ld-b">{getAuthorName(lead.author)} · {labelFromReference(getPostCategories(lead), archiveTitle)}</div></div>
     </a></div></section>
   )}

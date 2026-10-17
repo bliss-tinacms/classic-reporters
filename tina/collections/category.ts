@@ -27,6 +27,16 @@ export const CategoryCollection: Collection = {
         component: "textarea",
       },
     },
+    {
+      type: "image",
+      name: "featuredImage",
+      label: "Archive Lead Image",
+    },
+    {
+      type: "string",
+      name: "featuredImageAlt",
+      label: "Archive Lead Image Alt Text",
+    },
     seoFields,
   ],
 };

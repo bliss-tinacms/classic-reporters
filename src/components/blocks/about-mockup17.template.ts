@@ -10,6 +10,9 @@ export const aboutMockup17BlockSchema = {
         { name: 'eyebrow', label: 'Eyebrow', type: 'string' },
         { name: 'headline', label: 'Headline', type: 'string' },
         { name: 'lede', label: 'Lede', type: 'string', ui: { component: 'textarea' } },
+        { name: 'image', label: 'Hero Image', type: 'image' },
+        { name: 'imageAlt', label: 'Hero Image Alt Text', type: 'string' },
+        { name: 'quote', label: 'Image Quote', type: 'string' },
       ],
     },
     {
@@ -42,6 +45,8 @@ export const aboutMockup17BlockSchema = {
             { name: 'title', label: 'Title', type: 'string' },
             { name: 'text', label: 'Text', type: 'string', ui: { component: 'textarea' } },
             { name: 'link', label: 'Link', type: 'string' },
+            { name: 'image', label: 'Image', type: 'image' },
+            { name: 'imageAlt', label: 'Image Alt Text', type: 'string' },
           ],
         },
       ],

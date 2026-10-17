@@ -100,8 +100,8 @@ if (matchedPage) {
     const seo = data.seo ?? null;
     view = 'page';
     pageData = data;
-    pageTitle = seo?.metaTitle || data.seoTitle || config?.seo?.title || 'Starter Site';
-    pageDescription = seo?.metaDescription || config?.seo?.description || 'Welcome to Starter Site.';
+    pageTitle = seo?.metaTitle || data.seoTitle || config?.seo?.title || 'Classic Reporters';
+    pageDescription = seo?.metaDescription || config?.seo?.description || 'Welcome to Classic Reporters.';
   }
 }
 
@@ -130,8 +130,8 @@ if (view === 'not-found') {
       basePath: '/' + parsed.slug,
       hasPosts: posts.length > 0,
       seo: categorySeo,
-      seoTitle: categorySeo?.metaTitle || archiveTitle + ' Articles | ' + (config?.seo?.title || 'Starter Site'),
-      description: categorySeo?.metaDescription || editableCategory?.description || categoryEntry.data?.description || (allCategoryPosts.length > 0 ? 'Read the latest ' + archiveTitle + ' articles from Starter Site.' : 'Articles in the ' + archiveTitle + ' category will be published soon on Starter Site.'),
+      seoTitle: categorySeo?.metaTitle || archiveTitle + ' Articles | ' + (config?.seo?.title || 'Classic Reporters'),
+      description: categorySeo?.metaDescription || editableCategory?.description || categoryEntry.data?.description || (allCategoryPosts.length > 0 ? 'Read the latest ' + archiveTitle + ' articles from Classic Reporters.' : 'Articles in the ' + archiveTitle + ' category will be published soon on Classic Reporters.'),
     };
   }
 }
@@ -175,7 +175,7 @@ if (view === 'not-found') {
 
 if (view === 'not-found') {
   Astro.response.status = 404;
-  pageTitle = '404 | Page Not Found | Starter Site';
+  pageTitle = '404 | Page Not Found | Classic Reporters';
   pageDescription = 'The page you are looking for may have moved, been removed, or never existed.';
 }
 ---

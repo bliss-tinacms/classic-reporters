@@ -8,8 +8,8 @@ export const prerender = false;
 const pages = await listPages();
 const posts = await listBlogs();
 
-const title = 'Sitemap | Starter Site';
-const description = 'Browse the public pages and latest reporting published by Starter Site.';
+const title = 'Sitemap | Classic Reporters';
+const description = 'Browse the public pages and latest reporting published by Classic Reporters.';
 
 function cleanTitle(value: unknown, fallback = 'Untitled') {
   return typeof value === 'string' && value.trim() ? value.trim() : fallback;
@@ -89,7 +89,7 @@ const updated = new Date();
         <div class="ph-in sitemap-ph__in">
           <div class="ph-k"><b>Site index</b></div>
           <h1 id="sitemap-title">Sitemap</h1>
-          <p class="ph-d">A clean index of Starter Site public pages and published reporting, pulled dynamically from the Tina content collections.</p>
+          <p class="ph-d">A clean index of Classic Reporters public pages and published reporting, pulled dynamically from the Tina content collections.</p>
           <div class="sitemap-metrics" aria-label="Sitemap totals">
             <span><strong>{pageLinks.length}</strong> Pages</span>
             <span><strong>{postLinks.length}</strong> Stories</span>

@@ -8,8 +8,8 @@ const formSection = block?.formSection || {};
 const inboxes = block?.inboxes || {};
 const requests = block?.requests || {};
 const inboxCards = Array.isArray(inboxes?.cards) && inboxes.cards.length ? inboxes.cards : [
-  { title: 'The Newsroom', description: 'Story tips, correction requests, letters to the editor, contributor pitches, and other correspondence intended for the editorial team.', email: 'editor@example.com', note: 'If your tip concerns a sensitive matter, please indicate at the top of your message whether you want to speak on the record, on background, or off the record. The publication honors any arrangement it accepts, but the terms must be settled before the information is conveyed.' },
-  { title: 'General Inquiries', description: 'Advertising and partnership inquiries, technical issues with the site, newsletter and account questions, and general reader correspondence.', email: 'hello@example.com', note: 'This inbox is staffed during U.S. business hours and typically responds within two business days.' },
+  { title: 'The Newsroom', description: 'Story tips, correction requests, letters to the editor, contributor pitches, and other correspondence intended for the editorial team.', email: 'editorial@classicreporters.com', note: 'If your tip concerns a sensitive matter, please indicate at the top of your message whether you want to speak on the record, on background, or off the record. The publication honors any arrangement it accepts, but the terms must be settled before the information is conveyed.' },
+  { title: 'General Inquiries', description: 'Advertising and partnership inquiries, technical issues with the site, newsletter and account questions, and general reader correspondence.', email: 'info@classicreporters.com', note: 'This inbox is staffed during U.S. business hours and typically responds within two business days.' },
 ];
 const requestCards = Array.isArray(requests?.cards) && requests.cards.length ? requests.cards : [
   { title: 'Corrections', text: 'If you have identified a factual error in a published piece, send the article URL, the specific error, and the corrected information to the editorial inbox listed above.' },
@@ -36,7 +36,7 @@ const t = (value: unknown, fallback: string) => String(value || fallback);
     <form class="fm-f" method="POST" action={formConfigured ? formAction : undefined}>
       <div class="fm-top"><span>Contact Form</span><b>Story tips · Corrections · Letters · General</b></div>
       <div class="fm-b">
-        <input type="hidden" name="_subject" value={t(formSection.subject, 'Starter Site contact form submission')} />
+        <input type="hidden" name="_subject" value={t(formSection.subject, 'Classic Reporters contact form submission')} />
         <div class="f3">
           <div class="fr"><label class="fl" for="f-name">Full Name <b>*</b></label><input class="fi" id="f-name" name="full_name" type="text" placeholder="Your full name" required /></div>
           <div class="fr"><label class="fl" for="f-email">Email <b>*</b></label><input class="fi" id="f-email" name="email" type="email" placeholder="you@example.com" required /></div>

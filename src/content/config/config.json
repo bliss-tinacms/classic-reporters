@@ -1,26 +1,36 @@
 {
-  "headerNavigation": "",
-  "footerNavigation": "",
+  "headerNavigation": "src/content/navigation/header.json",
+  "footerNavigation": "src/content/navigation/footer.json",
   "seo": {
     "title": "Classic Reporters",
-    "description": "Independent reporting, analysis, and accountability journalism from Cleveland and beyond.",
+    "description": "Classic Reporters is a national news publication covering politics, business, technology, health, features, and culture. Original reporting, clearly attributed.",
     "siteOwner": "Andrew Bishop",
-    "logo": "https://res.cloudinary.com/qwdyyii2/image/upload/v1791209754/boilerplate/favicon.png",
+    "logo": "/classic-assets/9386b5086f1935ab.png",
     "favicon": "/favicon.svg",
-    "footerLogo": ""
+    "footerLogo": "/classic-assets/9386b5086f1935ab.png"
+  },
+  "footer": {
+    "description": "National news, reported plainly. Original reporting, clearly attributed.",
+    "editorialEmail": "editorial@classicreporters.com",
+    "generalEmail": "info@classicreporters.com",
+    "companyHeading": "Company",
+    "ctaText": "Story tips, corrections, and letters to the editor all reach a real editor.",
+    "ctaButtonText": "Contact the newsroom",
+    "ctaButtonLink": "/contact/"
   },
   "contactForm": {
     "formspreeEndpoint": "https://formspree.io/f/mzedolpq",
-    "heading": "Contact us",
-    "description": "Configure a unique Formspree endpoint for this site before enabling submissions.",
-    "buttonText": "Send Message",
-    "note": "This form remains disabled until its Formspree endpoint is configured.",
-    "subject": "Starter Site contact form submission"
+    "heading": "Send a message",
+    "description": "Story tips, corrections, letters, and general inquiries reach the appropriate team.",
+    "buttonText": "Send message",
+    "note": "Name, email, and message are required.",
+    "subject": "Classic Reporters contact form submission"
   },
-  "codeInjection": {
-    "headerCode": "",
-    "footerCode": ""
-  },
-  "contactLinks": [],
+  "codeInjection": { "headerCode": "", "footerCode": "" },
+  "contactLinks": [
+    { "title": "Editorial", "link": "mailto:editorial@classicreporters.com", "icon": "mail" },
+    { "title": "General inquiries", "link": "mailto:info@classicreporters.com", "icon": "mail" }
+  ],
+  "redirects": [],
   "footerStarfield": false
 }
