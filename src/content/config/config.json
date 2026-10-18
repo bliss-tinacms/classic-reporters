@@ -7,7 +7,7 @@
     "description": "Classic Reporters is a national news publication covering politics, business, technology, health, features, and culture. Original reporting, clearly attributed.",
     "siteOwner": "Andrew Bishop",
     "logo": "/classic-assets/9386b5086f1935ab.png",
-    "favicon": "/favicon.svg",
+    "favicon": "https://res.cloudinary.com/jk7mlbw1/image/upload/v1792305228/classic-reporters/favicon.png",
     "footerLogo": "/classic-assets/9386b5086f1935ab.png"
   },
   "footer": {
