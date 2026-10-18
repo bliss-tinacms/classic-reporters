@@ -6,10 +6,11 @@ import { fileURLToPath } from 'node:url';
 // protected runtime environment relative to this startup file first so CMS
 // saves remain Tina-first instead of silently falling back to deployed files.
 const appRoot = dirname(fileURLToPath(import.meta.url));
-const envFiles = [process.env.SITE_ENV_FILE, join(appRoot, '.env'), resolve('.env')].filter(Boolean);
+const envFile = [process.env.SITE_ENV_FILE, join(appRoot, '.env'), resolve('.env')]
+  .filter(Boolean)
+  .find((candidate) => existsSync(candidate));
 
-for (const envFile of envFiles) {
-  if (!existsSync(envFile)) continue;
+if (envFile) {
   const content = readFileSync(envFile, 'utf8');
   for (const rawLine of content.split(/\r?\n/)) {
     const line = rawLine.trim();
@@ -18,7 +19,9 @@ for (const envFile of envFiles) {
     const key = line.slice(0, index).trim();
     let value = line.slice(index + 1).trim();
     value = value.replace(/^['"]|['"]$/g, '');
-    if (!(key in process.env)) process.env[key] = value;
+    // The protected app environment is authoritative. Passenger may inherit
+    // stale account-level values that must not override this site's identity.
+    process.env[key] = value;
   }
 }
 
