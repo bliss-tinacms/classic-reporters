@@ -1,31 +1,252 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
 import { getBlogPermalink } from '../lib/permalinks';
-import type { CmsBlog,CmsConfig } from '../lib/data';
-interface Props{posts:CmsBlog[];config?:CmsConfig|null;data?:any;editData?:any}
-const {posts,data,editData}=Astro.props;
-const blocks=Array.isArray(data?.blocks)?data.blocks:[];
-const eblocks=Array.isArray(editData?.blocks)?editData.blocks:[];
-const isHome=(b:any)=>b?._template==='homepageTemplate'||b?.__typename==='PageBlocksHomepageTemplate';
-const home=blocks.find(isHome)??data?.homepage??{};const edit=eblocks.find(isHome)??editData?.homepage??home;
-const hero=home.hero??{},why=home.why??{},newsroom=home.newsroom??{},wire=home.wireFeature??{},coverage=home.coverage??{},contact=home.contact??{};
-const eh=edit.hero??hero,ew=edit.why??why,en=edit.newsroom??newsroom,ewire=edit.wireFeature??wire,ecov=edit.coverage??coverage,econtact=edit.contact??contact;
-const tf=(node:any,key:string)=>{try{return node?tinaField(node,key):undefined}catch{return undefined}};
-const text=(v:any,f:string)=>String(v||f);const arr=(v:any,f:any[])=>Array.isArray(v)&&v.length?v:f;
-const topics=arr(coverage.topics,[{number:'01',title:'U.S. News',text:'Congress, the courts, and the state-level stories that shape national debates.',link:'/us-news/'},{number:'02',title:'World News',text:'International developments and what they mean for Americans at home.',link:'/world-news/'},{number:'03',title:'Business',text:'Corporate decisions, labor developments, and the household finances they touch.',link:'/business/'},{number:'04',title:'Technology',text:'The products, platforms, and policy questions changing how Americans live and work.',link:'/technology/'},{number:'05',title:'Health',text:'Research and public-health developments that bear on practical decisions.',link:'/health/'},{number:'06',title:'Entertainment',text:'Film, television, music, books, and the business behind them.',link:'/entertainment/'},{number:'07',title:'Lifestyle',text:'Food, travel, home, and the everyday economics of American households.',link:'/lifestyle/'}]);
-const standards=arr(why.standards,[{label:'01',title:'Accurate reporting',text:'Every factual claim is verifiable. Errors are corrected openly, with a dated note describing what changed.'},{label:'02',title:'Fair reporting',text:'Subjects of material allegations get a meaningful chance to respond.'},{label:'03',title:'Clarity',text:'News is news. Analysis and opinion are labeled.'},{label:'04',title:'Independence',text:'Advertising and partnerships stay separate from the newsroom.'}]);
-const editorial=arr(newsroom.prompts,[{title:'Accuracy',text:'Every factual claim on the site is verifiable.'},{title:'Attribution',text:'We name sources and link original documents whenever possible.'},{title:'Fairness',text:'The subject of material criticism gets a meaningful chance to respond.'},{title:'Clarity',text:'News, analysis, opinion, and sponsored work are labeled.'},{title:'Corrections',text:'Material errors are corrected promptly and visibly.'}]);
-const people=arr(contact.cards,[{title:'Nancy Reed',email:'Publisher',text:'Nancy is the publisher of Classic Reporters.',image:'/classic-assets/8bfeb8facc1ba455.jpg'},{title:'Andrew Bishop',email:'Editor-in-Chief',text:'Andrew leads the newsroom from Cleveland.',image:'/classic-assets/ad5bf698dfde40aa.jpg'},{title:'Kelly Franklin',email:'Managing Editor',text:'Kelly manages the day-to-day operation of the newsroom.',image:'/classic-assets/cbd5c537bd11e1c5.jpg'},{title:'Michael Dawson',email:'World News Editor',text:'Michael runs the international desk.',image:'/classic-assets/d9235e4618627a9c.jpg'},{title:'Christine Riley',email:'Business Editor',text:'Christine edits the business section.',image:'/classic-assets/2f98147612d67f52.jpg'},{title:'Frank Hopkins',email:'Technology Editor',text:'Frank covers the platforms and products shaping daily life.',image:'/classic-assets/993b256f542fa3f7.jpg'}]);
-const storyImage=(p:any,i:number)=>p.heroImage||['/classic-assets/3b85da78e320dd90.jpg','/classic-assets/92e84dbfef4e4283.jpg','/classic-assets/6da808245538c93a.jpg'][i%3];
-const url=(p:any)=>{const x=getBlogPermalink(p);return x.endsWith('/')?x:x+'/'};
-const category=(p:any)=>{const c=Array.isArray(p.categories)&&p.categories.length?p.categories[0]:p.category;if(typeof c==='string')return c.split('/').pop()?.replace(/\.(json|mdx?)$/,'').replace(/-/g,' ')||'News';return c?.title||'News'};
+import '../styles/classic-home-exact.css';
+import type { CmsBlog, CmsConfig } from '../lib/data';
+
+interface Props {
+  posts: CmsBlog[];
+  config?: CmsConfig | null;
+  data?: any;
+  editData?: any;
+}
+
+const { posts, data, editData } = Astro.props;
+const blocks = Array.isArray(data?.blocks) ? data.blocks : [];
+const eblocks = Array.isArray(editData?.blocks) ? editData.blocks : [];
+const isHome = (block: any) => block?._template === 'homepageTemplate' || block?.__typename === 'PageBlocksHomepageTemplate';
+const home = blocks.find(isHome) ?? data?.homepage ?? {};
+const edit = eblocks.find(isHome) ?? editData?.homepage ?? home;
+const hero = home.hero ?? {};
+const why = home.why ?? {};
+const newsroom = home.newsroom ?? {};
+const wire = home.wireFeature ?? {};
+const coverage = home.coverage ?? {};
+const contact = home.contact ?? {};
+const eh = edit.hero ?? hero;
+const ew = edit.why ?? why;
+const en = edit.newsroom ?? newsroom;
+const ewire = edit.wireFeature ?? wire;
+const ecov = edit.coverage ?? coverage;
+const econtact = edit.contact ?? contact;
+const tf = (node: any, key: string) => {
+  try {
+    return node ? tinaField(node, key) : undefined;
+  } catch {
+    return undefined;
+  }
+};
+const text = (value: any, fallback: string) => String(value || fallback);
+const arr = (value: any, fallback: any[]) => Array.isArray(value) && value.length ? value : fallback;
+
+const topics = arr(coverage.topics, [
+  { number: '01', title: 'U.S. News', text: 'Congress, the courts, and the state-level stories that shape national debates.', link: '/us-news/' },
+  { number: '02', title: 'World News', text: 'International developments and what they mean for Americans at home.', link: '/world-news/' },
+  { number: '03', title: 'Business', text: 'Corporate decisions, labor developments, and the household finances they touch.', link: '/business/' },
+  { number: '04', title: 'Technology', text: 'The products, platforms, and policy questions changing how Americans live and work.', link: '/technology/' },
+  { number: '05', title: 'Health', text: 'Research and public-health developments that bear on practical decisions.', link: '/health/' },
+  { number: '06', title: 'Entertainment', text: 'Film, television, music, books, and the business behind them.', link: '/entertainment/' },
+  { number: '07', title: 'Lifestyle', text: 'Food, travel, home, and the everyday economics of American households.', link: '/lifestyle/' },
+]);
+const standards = arr(why.standards, [
+  { label: '01', title: 'Accurate reporting', text: 'Every factual claim is verifiable. Errors are corrected openly, with a dated note describing what changed.' },
+  { label: '02', title: 'Fair reporting', text: 'Subjects of material allegations get a meaningful chance to respond. When the facts are clear, we say so plainly.' },
+  { label: '03', title: 'Clarity', text: 'News is news. Analysis and opinion are labeled. Sponsored content is labeled and kept apart from reporting.' },
+  { label: '04', title: 'Independence', text: 'Advertising and partnerships stay separate from the newsroom. No sponsor reviews our reporting before it publishes.' },
+]);
+const editorial = arr(newsroom.prompts, [
+  { title: 'Accuracy', text: 'Every factual claim should be verifiable.' },
+  { title: 'Attribution', text: 'Quoted people, studies, records, and other reporting are clearly credited.' },
+  { title: 'Anonymous sources', text: 'Anonymity is used only when information genuinely matters and cannot be obtained another way.' },
+  { title: 'Fairness', text: 'People and organizations facing material allegations get a meaningful chance to respond.' },
+  { title: 'Labeling', text: 'News, analysis, opinion, and sponsored work are visibly distinct.' },
+  { title: 'Conflicts of interest', text: 'Editors, reporters, and contributors disclose relationships that could create a conflict.' },
+  { title: 'Corrections', text: 'Substantive corrections receive a clearly marked, dated note.' },
+]);
+const people = arr(contact.cards, [
+  { title: 'Nancy Reed', email: 'Publisher', text: 'Works from Miami. Responsible for the site’s direction, sustainability, and the independence of the newsroom from the commercial side.', image: '/classic-assets/8bfeb8facc1ba455.jpg' },
+  { title: 'Andrew Bishop', email: 'Editor-in-Chief', text: 'Leads the newsroom from Cleveland. Fifteen-plus years in editorial leadership at regional dailies; final word on what we publish.', image: '/classic-assets/ad5bf698dfde40aa.jpg' },
+  { title: 'Kelly Franklin', email: 'Managing Editor', text: 'Runs day-to-day operations from San Diego. Owns the editorial calendar, assignments, and the flow across desks.', image: '/classic-assets/cbd5c537bd11e1c5.jpg' },
+  { title: 'Michael Dawson', email: 'Business Editor', text: 'Runs the business desk from Little Rock. Always reaches for the underlying numbers.', image: '/classic-assets/d9235e4618627a9c.jpg' },
+  { title: 'Christine Riley', email: 'Features Editor', text: 'Edits features from Portland, Maine. Food, travel, and the everyday economics of American households.', image: '/classic-assets/2f98147612d67f52.jpg' },
+  { title: 'Frank Hopkins', email: 'Standards Editor', text: 'Oversees fact-checking and the corrections record from Wichita. The in-house authority on the stylebook.', image: '/classic-assets/993b256f542fa3f7.jpg' },
+]);
+
+const heroTitle = text(hero.title, 'Original reporting, plainly written');
+const plainly = heroTitle.match(/plainly/i);
+const heroTitleBefore = plainly ? heroTitle.slice(0, plainly.index) : heroTitle;
+const heroTitleWord = plainly?.[0] ?? '';
+const heroTitleAfter = plainly ? heroTitle.slice((plainly.index ?? 0) + plainly[0].length) : '';
+const storyImage = (post: any, index: number) => post.heroImage || ['/classic-assets/3b85da78e320dd90.jpg', '/classic-assets/92e84dbfef4e4283.jpg', '/classic-assets/6da808245538c93a.jpg'][index % 3];
+const url = (post: any) => {
+  const permalink = getBlogPermalink(post);
+  return permalink.endsWith('/') ? permalink : `${permalink}/`;
+};
+const category = (post: any) => {
+  const value = Array.isArray(post.categories) && post.categories.length ? post.categories[0] : post.category;
+  if (typeof value === 'string') return value.split('/').pop()?.replace(/\.(json|mdx?)$/, '').replace(/-/g, ' ') || 'News';
+  return value?.title || 'News';
+};
+const formatDate = (value: any) => {
+  if (!value) return '';
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? '' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+};
+const richTextWords = (node: any): number => {
+  if (!node) return 0;
+  if (typeof node === 'string') return node.trim().split(/\s+/).filter(Boolean).length;
+  if (Array.isArray(node)) return node.reduce((total, child) => total + richTextWords(child), 0);
+  if (typeof node === 'object') return richTextWords(node.text) + richTextWords(node.children);
+  return 0;
+};
+const storyMeta = (post: any) => {
+  const date = formatDate(post.pubDate);
+  const explicit = post.readingTime || post.readTime;
+  const minutes = explicit || (richTextWords(post.body) ? `${Math.max(1, Math.ceil(richTextWords(post.body) / 220))} min read` : '');
+  return [date, minutes].filter(Boolean).join(' · ');
+};
 ---
-<main class="cr-page cr-home">
-<section class="cr-home-hero"><div class="cr-home-hero-grid"><div><div class="cr-kicker" data-tina-field={tf(eh,'eyebrow')}>{text(hero.eyebrow,'National news · Reported plainly')}</div><h1 data-tina-field={tf(eh,'title')}>{text(hero.title,'Original reporting, plainly written')}</h1><p data-tina-field={tf(eh,'description')}>{text(hero.description,'National news for American readers — with clear attribution, open corrections, and the working standards that have long defined serious American journalism.')}</p></div><img src={text(hero.image,'/classic-assets/c479a47fbb7205d0.jpg')} alt={text(hero.imageAlt,'Newspapers and a notebook overlooking the U.S. Capitol at sunrise')} data-tina-field={tf(eh,'image')} /></div></section>
-<section class="cr-section cr-coverage"><div class="cr-section-head"><div><div class="cr-kicker">Coverage areas</div><h2 data-tina-field={tf(ecov,'title')}>{text(coverage.title,'What we cover')}</h2></div><p data-tina-field={tf(ecov,'description')}>{text(coverage.description,'Daily coverage across U.S. and world news, business, technology, health, entertainment, and lifestyle.')}</p></div><div class="cr-coverage-grid">{topics.map((item:any,i:number)=><a href={item.link||'/'}><small data-tina-field={tf(ecov?.topics?.[i],'number')}>{item.number}</small><span><b data-tina-field={tf(ecov?.topics?.[i],'title')}>{item.title}</b><em data-tina-field={tf(ecov?.topics?.[i],'text')}>{item.text}</em></span><i>→</i></a>)}</div></section>
-<section class="cr-newsroom"><div class="cr-newsroom-inner"><div><div class="cr-kicker" data-tina-field={tf(ew,'eyebrow')}>{text(why.eyebrow,'About us — The newsroom')}</div><h2 data-tina-field={tf(ew,'title')}>{text(why.title,'A small newsroom with old-fashioned standards.')}</h2><p data-tina-field={tf(ew,'paragraphOne')}>{text(why.paragraphOne,'We’re a small, distributed newsroom producing daily national coverage. Our editors and reporters come out of the working newspaper tradition: we prefer named sources to anonymous ones, and verifiable claims to insider chatter.')}</p><blockquote data-tina-field={tf(ew,'paragraphTwo')}>{text(why.paragraphTwo,'“What we owe our readers.”')}</blockquote></div><div class="cr-newsroom-ledger">{standards.map((item:any,i:number)=><article><strong data-tina-field={tf(ew?.standards?.[i],'label')}>{item.label}</strong><div><h3 data-tina-field={tf(ew?.standards?.[i],'title')}>{item.title}</h3><p data-tina-field={tf(ew?.standards?.[i],'text')}>{item.text}</p></div></article>)}</div></div></section>
-<section class="cr-section cr-topstories"><div class="cr-rule-head"><h2 data-tina-field={tf(en,'heading')}>{text(newsroom.heading,'This week’s top stories')}</h2><span data-tina-field={tf(en,'subheading')}>{text(newsroom.subheading,'Published this week')}</span></div><div class="cr-story-grid">{posts.slice(0,3).map((post:any,i:number)=><a href={url(post)}><img src={storyImage(post,i)} alt=""/><small>{category(post)}</small><h3>{post.title||'Untitled story'}</h3><p>{post.description||'Read the latest reporting from the newsroom.'}</p></a>)}</div></section>
-<section class="cr-quote"><p data-tina-field={tf(ewire,'quote')}>{text(wire.quote,'“We would rather publish a piece a day later and get it right than publish it first and correct it later.”')}</p><div><b data-tina-field={tf(ewire,'author')}>{text(wire.author,'Andrew Bishop')}</b><span data-tina-field={tf(ewire,'byline')}>{text(wire.byline,'Editor-in-Chief')}</span></div></section>
-<section class="cr-section cr-standards"><div class="cr-section-head"><div><div class="cr-kicker">Our standards</div><h2>The standards behind every story</h2></div><p>{text(newsroom.submitHeading,'A newsroom is only as trustworthy as the rules it follows when no one is watching.')}</p></div><div class="cr-standards-grid"><div class="cr-standards-intro"><p data-tina-field={tf(en,'submitHeading')}>{text(newsroom.submitHeading,'We have five rules, and the entire newsroom works from them.')}</p><a href={text(newsroom.submitButtonLink,'/editorial-guidelines/')} data-tina-field={tf(en,'submitButtonText')}>{text(newsroom.submitButtonText,'Read the full guidelines')} →</a></div><div>{editorial.map((item:any,i:number)=><article><small>{String(i+1).padStart(2,'0')}</small><span><b data-tina-field={tf(en?.prompts?.[i],'title')}>{item.title}</b><em data-tina-field={tf(en?.prompts?.[i],'text')}>{item.text}</em></span></article>)}</div></div></section>
-<section class="cr-section cr-team-preview"><div class="cr-rule-head"><h2 data-tina-field={tf(econtact,'title')}>{text(contact.title,'The Classic Reporters newsroom')}</h2><span data-tina-field={tf(econtact,'eyebrow')}>{text(contact.eyebrow,'Meet the editors')}</span></div><div class="cr-team-grid">{people.map((person:any,i:number)=><a href={person.link||'/our-team/'}><img src={person.image||['/classic-assets/8bfeb8facc1ba455.jpg','/classic-assets/ad5bf698dfde40aa.jpg','/classic-assets/cbd5c537bd11e1c5.jpg','/classic-assets/d9235e4618627a9c.jpg','/classic-assets/2f98147612d67f52.jpg','/classic-assets/993b256f542fa3f7.jpg'][i%6]} alt={person.imageAlt||person.title||''}/><h3 data-tina-field={tf(econtact?.cards?.[i],'title')}>{person.title}</h3><small data-tina-field={tf(econtact?.cards?.[i],'email')}>{person.email}</small><p data-tina-field={tf(econtact?.cards?.[i],'text')}>{person.text}</p></a>)}</div></section>
+
+<main class="cr-exact-home">
+  <section class="crx-hero">
+    <div class="crx-hero__grid">
+      <div>
+        <div class="crx-kicker" data-tina-field={tf(eh, 'eyebrow')}>{text(hero.eyebrow, 'National news · Reported plainly')}</div>
+        <h1 data-tina-field={tf(eh, 'title')}>{heroTitleBefore}{heroTitleWord && <em>{heroTitleWord}</em>}{heroTitleAfter}</h1>
+        <p data-tina-field={tf(eh, 'description')}>{text(hero.description, 'National news for American readers — with clear attribution, open corrections, and the working standards that have long defined serious American journalism.')}</p>
+      </div>
+      <figure>
+        <img src={text(hero.image, '/classic-assets/c479a47fbb7205d0.jpg')} alt={text(hero.imageAlt, 'Newspapers and a notebook on a ledge overlooking the U.S. Capitol at sunrise')} data-tina-field={tf(eh, 'image')} />
+      </figure>
+    </div>
+  </section>
+
+  <section class="crx-coverage">
+    <div class="crx-shell crx-shell--section">
+      <header class="crx-section-heading">
+        <div>
+          <div class="crx-kicker">Coverage areas</div>
+          <h2 data-tina-field={tf(ecov, 'title')}>{text(coverage.title, 'What we cover')}</h2>
+        </div>
+        <p data-tina-field={tf(ecov, 'description')}>{text(coverage.description, 'Daily coverage across U.S. and world news, business, technology, health, entertainment, and lifestyle.')}</p>
+      </header>
+      <div class="crx-coverage__grid">
+        {topics.map((item: any, index: number) => (
+          <a href={item.link || '/'}>
+            <span class="crx-coverage__number" data-tina-field={tf(ecov?.topics?.[index], 'number')}>{item.number}</span>
+            <span class="crx-coverage__copy">
+              <span class="crx-coverage__title" data-tina-field={tf(ecov?.topics?.[index], 'title')}>{item.title}</span>
+              <span class="crx-coverage__text" data-tina-field={tf(ecov?.topics?.[index], 'text')}>{item.text}</span>
+            </span>
+            <span class="crx-circle-arrow" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="crx-newsroom">
+    <div class="crx-newsroom__inner">
+      <div>
+        <div class="crx-kicker" data-tina-field={tf(ew, 'eyebrow')}>{text(why.eyebrow, 'About us — The newsroom')}</div>
+        <h2 data-tina-field={tf(ew, 'title')}>{text(why.title, 'A small newsroom with old-fashioned standards.')}</h2>
+        <p data-tina-field={tf(ew, 'paragraphOne')}>{text(why.paragraphOne, 'We’re a small, distributed newsroom producing daily national coverage. Our editors and reporters come out of the working newspaper tradition: we prefer named sources to anonymous ones, and verifiable claims to insider chatter.')}</p>
+        <blockquote data-tina-field={tf(ew, 'paragraphTwo')}>{text(why.paragraphTwo, '“What we owe our readers.”')}</blockquote>
+      </div>
+      <div class="crx-newsroom__ledger">
+        {standards.map((item: any, index: number) => (
+          <article>
+            <span class="crx-newsroom__number" data-tina-field={tf(ew?.standards?.[index], 'label')}>{String(item.label ?? '').match(/\d+/)?.[0] || String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 data-tina-field={tf(ew?.standards?.[index], 'title')}>{item.title}</h3>
+              <p data-tina-field={tf(ew?.standards?.[index], 'text')}>{item.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="crx-stories">
+    <header class="crx-rule-heading">
+      <h2 data-tina-field={tf(en, 'heading')}>{text(newsroom.heading, 'This week’s top stories')}</h2>
+      <span data-tina-field={tf(en, 'subheading')}>{text(newsroom.subheading, 'Published this week')}</span>
+    </header>
+    <div class="crx-stories__grid">
+      {posts.slice(0, 3).map((post: any, index: number) => (
+        <a href={url(post)}>
+          <img src={storyImage(post, index)} alt={post.heroImageAlt || ''} data-tina-field={tf(post, 'heroImage')} />
+          <span class="crx-story__category">{category(post)}</span>
+          <span class="crx-story__title" data-tina-field={tf(post, 'title')}>{post.title || 'Untitled story'}</span>
+          <span class="crx-story__description" data-tina-field={tf(post, 'description')}>{post.description || 'Read the latest reporting from the newsroom.'}</span>
+          {storyMeta(post) && <span class="crx-story__meta" data-tina-field={tf(post, 'pubDate')}>{storyMeta(post)}</span>}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="crx-commitment">
+    <div class="crx-commitment__inner">
+      <div class="crx-kicker" data-tina-field={tf(ewire, 'eyebrow')}>{text(wire.eyebrow, 'Our editorial commitment')}</div>
+      <blockquote data-tina-field={tf(ewire, 'quote')}>{text(wire.quote, '“We would rather publish a piece a day later and get it right than publish it first and correct it later.”')}</blockquote>
+      <div class="crx-author-row">
+        <img src={text(wire.image, '/classic-assets/ad5bf698dfde40aa.jpg')} alt={text(wire.imageAlt, '')} data-tina-field={tf(ewire, 'image')} />
+        <div>
+          <strong data-tina-field={tf(ewire, 'author')}>{text(wire.author, 'Andrew Bishop')}</strong>
+          <span data-tina-field={tf(ewire, 'byline')}>{text(wire.byline, 'Editor-in-Chief · Fifteen years in editorial leadership at regional dailies')}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="crx-guidelines">
+    <div class="crx-guidelines__grid">
+      <div class="crx-guidelines__intro">
+        <div class="crx-kicker">Editorial guidelines</div>
+        <h2>The standards behind every story</h2>
+        <p>They govern what we publish, how we source it, how we label it, and how we correct it — for staff reporting, contributed pieces, and wire material alike.</p>
+        <blockquote data-tina-field={tf(en, 'submitHeading')}>{text(newsroom.submitHeading, 'When the rules and the situation don’t line up, we ask one question: is this a piece we’re prepared to stand behind and explain to a reader?')}</blockquote>
+        <div class="crx-guidelines__author">
+          <img src={text(wire.image, '/classic-assets/ad5bf698dfde40aa.jpg')} alt={text(wire.author, 'Andrew Bishop')} data-tina-field={tf(ewire, 'image')} />
+          <div>
+            <strong data-tina-field={tf(ewire, 'author')}>{text(wire.author, 'Andrew Bishop')}</strong>
+            <span data-tina-field={tf(ewire, 'byline')}>{text(wire.byline, 'Editor-in-Chief')} · Updated September 15, 2026</span>
+          </div>
+        </div>
+        <a class="crx-guidelines__button" href={text(newsroom.submitButtonLink, '/editorial-guidelines/')}>
+          <span data-tina-field={tf(en, 'submitButtonText')}>{text(newsroom.submitButtonText, 'Read the full guidelines')}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+      <div class="crx-guidelines__list">
+        {editorial.map((item: any, index: number) => (
+          <article>
+            <span class="crx-guidelines__number">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 data-tina-field={tf(en?.prompts?.[index], 'title')}>{item.title}</h3>
+              <p data-tina-field={tf(en?.prompts?.[index], 'text')}>{item.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="crx-team">
+    <div class="crx-team__inner">
+      <div class="crx-kicker" data-tina-field={tf(econtact, 'eyebrow')}>{text(contact.eyebrow, 'Our team')}</div>
+      <h2 data-tina-field={tf(econtact, 'title')}>{text(contact.title, 'The Classic Reporters newsroom')}</h2>
+      <div class="crx-team__grid">
+        {people.map((person: any, index: number) => (
+          <a href={person.link || '/our-team/'}>
+            <img src={person.image || ['/classic-assets/8bfeb8facc1ba455.jpg', '/classic-assets/ad5bf698dfde40aa.jpg', '/classic-assets/cbd5c537bd11e1c5.jpg', '/classic-assets/d9235e4618627a9c.jpg', '/classic-assets/2f98147612d67f52.jpg', '/classic-assets/993b256f542fa3f7.jpg'][index % 6]} alt={person.imageAlt || person.title || ''} data-tina-field={tf(econtact?.cards?.[index], 'image')} />
+            <span class="crx-team__name" data-tina-field={tf(econtact?.cards?.[index], 'title')}>{person.title}</span>
+            <span class="crx-team__role" data-tina-field={tf(econtact?.cards?.[index], 'email')}>{person.email}</span>
+            <span class="crx-team__bio" data-tina-field={tf(econtact?.cards?.[index], 'text')}>{person.text}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
 </main>

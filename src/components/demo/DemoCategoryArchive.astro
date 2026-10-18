@@ -2,36 +2,14 @@
 import { tinaField } from '@tinacms/astro/tina-field';
 import { getBlogPermalink } from '../../lib/permalinks';
 import { labelFromReference, getAuthorName, getPostCategories } from './DemoHelpers';
-const { archiveTitle = 'Category', posts = [], currentPage = 1, totalPages = 1, basePath = '/', category = null, showCategoryBadge = true } = Astro.props;
-const lead = posts[0];
-const leadImage = category?.featuredImage || lead?.heroImage;
-const rest = posts.slice(1);
-const hasPosts = posts.length > 0;
-const hasBottomPosts = rest.length > 0;
-function postUrl(post: any) { const url = getBlogPermalink(post); return url.endsWith('/') ? url : url + '/'; }
-function pagePath(page: number) { return page <= 1 ? basePath + '/' : basePath + '/page/' + page + '/'; }
-const emptyHeadline = hasPosts ? `No more articles in ${archiveTitle} yet.` : `There are no articles published yet under ${archiveTitle}.`;
-const emptyBody = hasPosts
-  ? 'There are no additional articles published yet under this category. Please check back soon for new coverage.'
-  : 'There are no articles published yet under this category. Please check back soon for new coverage.';
+const { archiveTitle='Category',posts=[],currentPage=1,totalPages=1,basePath='/',category=null }=Astro.props;
+const lead=posts[0],rest=posts.slice(1),leadImage=category?.featuredImage||lead?.heroImage;
+const url=(p:any)=>{const u=getBlogPermalink(p);return u.endsWith('/')?u:u+'/'};
+const pagePath=(p:number)=>p<=1?basePath+'/':basePath+'/page/'+p+'/';
 ---
-
-<main class="ffn-demo ffn-demo-category">
-  <header class="ch"><div class="w"><div class="ch-in">{showCategoryBadge && <div class="ch-k"><b>Category</b></div>}<h1 data-tina-field={category ? tinaField(category, 'title') : undefined}>{archiveTitle}</h1></div></div></header>
-  {lead && (
-    <section class="ld"><div class="w"><a href={postUrl(lead)} class="ld-a">
-      {leadImage ? <div class="ld-img" role="img" aria-label={category?.featuredImageAlt || lead?.heroImageAlt || ''} style={`background-image:url(${leadImage})`} data-tina-field={category?.featuredImage ? tinaField(category, 'featuredImage') : undefined}></div> : <div class="ld-img demo-img"></div>}
-      <div class="ld-c"><span class="ld-k">Lead Story</span><div class="ld-h">{lead.title}</div>{lead.description && <p class="ld-x">{lead.description}</p>}<div class="ld-b">{getAuthorName(lead.author)} · {labelFromReference(getPostCategories(lead), archiveTitle)}</div></div>
-    </a></div></section>
-  )}
-  <section class="lg"><div class="w"><div class="lg-h"><div class="eye"><i></i><span>{hasPosts ? 'Most recent first' : 'No articles yet'}</span></div><div class="h2">{hasPosts ? `More in ${archiveTitle}` : emptyHeadline}</div></div>
-    {hasBottomPosts ? (
-      <div>
-        {rest.map((post: any) => <a href={postUrl(post)} class="si">{post.heroImage ? <img class="si-img" src={post.heroImage} alt="" /> : <div class="si-img demo-img"></div>}<div><div class="si-k">{labelFromReference(getPostCategories(post), archiveTitle)}</div><div class="si-h">{post.title}</div>{post.description && <p class="si-x">{post.description}</p>}<div class="si-b">{getAuthorName(post.author)}</div></div></a>)}
-      </div>
-    ) : (
-      <div class="empty-archive"><p>{emptyBody}</p><a href="/" class="empty-archive__link">Back to the homepage</a></div>
-    )}
-  </div></section>
-  {totalPages > 1 && <nav class="pg" aria-label="Archive pagination"><div class="w"><a class="nx" href={pagePath(Math.max(1,currentPage-1))}>Prev</a>{Array.from({ length: Math.min(totalPages, 4) }).map((_, i) => { const p=i+1; return <a class={p===currentPage?'on':''} href={pagePath(p)}>{p}</a>; })}<span class="gap">…</span><a class="nx" href={pagePath(Math.min(totalPages,currentPage+1))}>Next →</a></div></nav>}
+<main class="cr-exact-category">
+  <header class="crx-wrap crx-cat-head"><nav class="crx-crumbs"><a href="/">Home</a><span>/</span><span>{archiveTitle}</span></nav><h1 data-tina-field={category?tinaField(category,'title'):undefined}>{archiveTitle}</h1></header>
+  {lead&&<section class="crx-wrap"><a class="crx-lead" href={url(lead)}>{leadImage?<div class="crx-lead-img" role="img" aria-label={category?.featuredImageAlt||lead?.heroImageAlt||''} style={`background-image:url(${leadImage})`} data-tina-field={category?.featuredImage?tinaField(category,'featuredImage'):undefined}></div>:<div class="crx-lead-img"></div>}<span class="crx-lead-copy"><span class="crx-pill">Latest · {labelFromReference(getPostCategories(lead),archiveTitle)}</span><span class="crx-lead-title">{lead.title}</span>{lead.description&&<span class="crx-lead-desc">{lead.description}</span>}<span class="crx-meta">By {getAuthorName(lead.author)}</span></span></a></section>}
+  <section class="crx-wrap crx-list">{rest.length?<div class="crx-card-grid">{rest.map((post:any)=><a href={url(post)} class="crx-story">{post.heroImage?<img src={post.heroImage} alt={post.heroImageAlt||''}/>:<span class="crx-story-img"></span>}<span class="crx-story-k">{labelFromReference(getPostCategories(post),archiveTitle)}</span><span class="crx-story-title">{post.title}</span>{post.description&&<span class="crx-story-desc">{post.description}</span>}<span class="crx-story-meta">By {getAuthorName(post.author)}</span></a>)}</div>:<p>There are no additional articles published yet under this category. Please check back soon for new coverage.</p>}
+  {totalPages>1&&<nav class="crx-pagination" aria-label="Archive pagination"><a class={currentPage<=1?'disabled':''} href={pagePath(Math.max(1,currentPage-1))}>← Newer</a>{Array.from({length:Math.min(totalPages,4)}).map((_,i)=>{const p=i+1;return <a class={p===currentPage?'on':''} href={pagePath(p)}>{p}</a>})}<a href={pagePath(Math.min(totalPages,currentPage+1))}>Older →</a></nav>}</section>
 </main>

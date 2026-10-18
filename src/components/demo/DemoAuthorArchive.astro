@@ -1,24 +1,12 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
 import { getBlogPermalink } from '../../lib/permalinks';
-import { labelFromReference, getPostCategories } from './DemoHelpers';
-const { archiveTitle = 'Author', author = null, posts = [], currentPage = 1, totalPages = 1, basePath = '/author' } = Astro.props;
-function postUrl(post: any) { const url = getBlogPermalink(post); return url.endsWith('/') ? url : url + '/'; }
-function pagePath(page: number) { return page <= 1 ? basePath + '/' : basePath + '/page/' + page + '/'; }
-const bio = author?.bio || `${archiveTitle} writes and edits coverage for Classic Reporters.`;
-const avatar = author?.avatar || '';
-const role = author?.role || '';
+import { labelFromReference,getPostCategories } from './DemoHelpers';
+const {archiveTitle='Author',author=null,posts=[],currentPage=1,totalPages=1,basePath='/author'}=Astro.props;
+const bio=author?.bio||`${archiveTitle} writes and edits coverage for Classic Reporters.`,avatar=author?.avatar||'',role=author?.role||'';
+const url=(p:any)=>{const u=getBlogPermalink(p);return u.endsWith('/')?u:u+'/'};const pagePath=(p:number)=>p<=1?basePath+'/':basePath+'/page/'+p+'/';
 ---
-
-<main class="ffn-demo ffn-demo-author">
-  <header class="ah"><div class="w"><div class="ah-in">
-    {avatar ? <img class="ah-img" src={avatar} alt={archiveTitle} data-tina-field={author ? tinaField(author, 'avatar') : undefined} /> : <div class="ah-img demo-img"></div>}
-    <div><div class="ah-k"><b>Author</b></div><h1 data-tina-field={author ? tinaField(author, 'name') : undefined}>{archiveTitle}</h1>{role && <div class="ah-r" data-tina-field={author ? tinaField(author, 'role') : undefined}>{role}</div>}<p class="ah-b" data-tina-field={author ? tinaField(author, 'bio') : undefined}>{bio}</p></div>
-  </div></div></header>
-  <section class="lg"><div class="w"><div class="lg-h"><div class="eye"><i></i><span>Most recent first</span></div><div class="h2">Stories by {archiveTitle}</div></div>
-    <div>
-      {posts.map((post: any) => <a href={postUrl(post)} class="si">{post.heroImage ? <img class="si-img" src={post.heroImage} alt="" /> : <div class="si-img demo-img"></div>}<div><div class="si-k">{labelFromReference(getPostCategories(post))}</div><div class="si-h">{post.title}</div>{post.description && <p class="si-x">{post.description}</p>}</div></a>)}
-    </div>
-  </div></section>
-  {totalPages > 1 && <nav class="pg" aria-label="Archive pagination"><div class="w"><a class="nx" href={pagePath(Math.max(1,currentPage-1))}>Prev</a>{Array.from({ length: Math.min(totalPages, 3) }).map((_, i) => { const p=i+1; return <a class={p===currentPage?'on':''} href={pagePath(p)}>{p}</a>; })}<span class="gap">…</span><a class="nx" href={pagePath(Math.min(totalPages,currentPage+1))}>Next →</a></div></nav>}
+<main class="cr-exact-author">
+<header class="crx-wrap crx-author-head"><nav class="crx-kicker"><a href="/">Home</a> / <a href="/our-team/">Our team</a> / <span>{archiveTitle}</span></nav><div class="crx-author-card">{avatar?<img class="crx-avatar" src={avatar} alt={archiveTitle} data-tina-field={author?tinaField(author,'avatar'):undefined}/>:<span class="crx-avatar"></span>}<div class="crx-author-copy">{role&&<span class="crx-role" data-tina-field={author?tinaField(author,'role'):undefined}>{role}</span>}<h1 data-tina-field={author?tinaField(author,'name'):undefined}>{archiveTitle}</h1><p class="crx-bio" data-tina-field={author?tinaField(author,'bio'):undefined}>{bio}</p></div></div></header>
+<section class="crx-wrap crx-author-list"><h2>Articles by {archiveTitle}</h2><div class="crx-card-grid">{posts.map((post:any)=><a href={url(post)} class="crx-story">{post.heroImage?<img src={post.heroImage} alt={post.heroImageAlt||''}/>:<span class="crx-story-img"></span>}<span class="crx-story-k">{labelFromReference(getPostCategories(post))}</span><span class="crx-story-title">{post.title}</span>{post.description&&<span class="crx-story-desc">{post.description}</span>}</a>)}</div>{totalPages>1&&<nav class="crx-pagination" aria-label="Archive pagination"><a class={currentPage<=1?'disabled':''} href={pagePath(Math.max(1,currentPage-1))}>← Newer</a>{Array.from({length:Math.min(totalPages,4)}).map((_,i)=>{const p=i+1;return <a class={p===currentPage?'on':''} href={pagePath(p)}>{p}</a>})}<a href={pagePath(Math.min(totalPages,currentPage+1))}>Older →</a></nav>}</section>
 </main>

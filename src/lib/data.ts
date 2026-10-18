@@ -57,17 +57,50 @@ function readFrontmatterValue(collection: 'blog' | 'page', slug?: string | null,
 	return null;
 }
 
+function markdownInlineChildren(value: string) {
+	const children: Array<Record<string, any>> = [];
+	const source = value.replace(/\\:/g, ':');
+	const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+	let cursor = 0;
+	for (const match of source.matchAll(linkPattern)) {
+		const index = match.index ?? 0;
+		if (index > cursor) children.push({ type: 'text', text: source.slice(cursor, index) });
+		children.push({ type: 'a', url: match[2], children: [{ type: 'text', text: match[1] }] });
+		cursor = index + match[0].length;
+	}
+	if (cursor < source.length) children.push({ type: 'text', text: source.slice(cursor) });
+	return children.length ? children : [{ type: 'text', text: source }];
+}
+
 function markdownToTinaRichText(markdown?: string | null) {
 	const children = (markdown || '')
 		.split(/\n{2,}/)
 		.map((block) => block.trim())
 		.filter(Boolean)
-		.map((block) => {
+		.flatMap((block) => {
 			const heading = block.match(/^(#{1,6})\s+(.+)$/);
-			if (heading) {
-				return { type: 'h' + Math.min(6, heading[1].length), children: [{ type: 'text', text: heading[2].trim() }] };
+			if (heading) return [{ type: 'h' + Math.min(6, heading[1].length), children: markdownInlineChildren(heading[2].trim()) }];
+
+			const image = block.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+			if (image) return [{ type: 'img', url: image[2], alt: image[1], children: [{ type: 'text', text: '' }] }];
+
+			const lines = block.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+			if (lines.length && lines.every((line) => /^[-*+]\s+/.test(line))) {
+				return [{
+					type: 'ul',
+					children: lines.map((line) => ({
+						type: 'li',
+						children: [{ type: 'lic', children: markdownInlineChildren(line.replace(/^[-*+]\s+/, '')) }],
+					})),
+				}];
 			}
-			return { type: 'p', children: [{ type: 'text', text: block.replace(/\n+/g, ' ') }] };
+
+			if (lines.length && lines.every((line) => /^>\s?/.test(line))) {
+				const quote = lines.map((line) => line.replace(/^>\s?/, '')).join(' ');
+				return [{ type: 'blockquote', children: [{ type: 'p', children: markdownInlineChildren(quote) }] }];
+			}
+
+			return [{ type: 'p', children: markdownInlineChildren(lines.join(' ')) }];
 		});
 	return { type: 'root', children };
 }

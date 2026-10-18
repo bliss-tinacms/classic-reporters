@@ -1,29 +1,67 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
 import type { CmsConfig } from '../lib/data';
-interface Props { config?: CmsConfig | null; navigation?: NavigationDocument | null; }
-type NavItem={label?:string|null;href?:string|null;children?:(NavItem|null)[]|null};
-type NavigationDocument={title?:string|null;items?:(NavItem|null)[]|null};
-const {config,navigation}=Astro.props;
-const cfg=config as any;
-const seo=cfg?.seo??null;
-const siteTitle=seo?.title||'Classic Reporters';
-const logo=seo?.logo||'/classic-assets/9386b5086f1935ab.png';
-const defaults=[
- {label:'U.S. News',href:'/us-news/'},{label:'World News',href:'/world-news/'},{label:'Business',href:'/business/'},{label:'Technology',href:'/technology/'},{label:'Health',href:'/health/'},{label:'Entertainment',href:'/entertainment/'},{label:'Lifestyle',href:'/lifestyle/'},
+
+interface Props {
+  config?: CmsConfig | null;
+  navigation?: NavigationDocument | null;
+}
+
+type NavItem = {
+  label?: string | null;
+  href?: string | null;
+  children?: (NavItem | null)[] | null;
+};
+
+type NavigationDocument = {
+  title?: string | null;
+  items?: (NavItem | null)[] | null;
+};
+
+const { config, navigation } = Astro.props;
+const cfg = config as any;
+const seo = cfg?.seo ?? null;
+const siteTitle = seo?.title || 'Classic Reporters';
+const logo = seo?.logo || '/classic-assets/9386b5086f1935ab.png';
+const defaults: NavItem[] = [
+  { label: 'U.S. News', href: '/us-news/' },
+  { label: 'World News', href: '/world-news/' },
+  { label: 'Business', href: '/business/' },
+  { label: 'Technology', href: '/technology/' },
+  { label: 'Health', href: '/health/' },
+  { label: 'Entertainment', href: '/entertainment/' },
+  { label: 'Lifestyle', href: '/lifestyle/' },
 ];
-const configured=((navigation?.items??[]) as NavItem[]).filter((item)=>item?.label&&item?.href);
-const menuItems=configured.length?configured:defaults;
+const configured = ((navigation?.items ?? []) as NavItem[]).filter(
+  (item) => item?.label && item?.href,
+);
+const menuItems = configured.length ? configured : defaults;
 ---
-<header class="cr-header" data-brand-header>
-  <input class="cr-nav-toggle" id="cr-nav-toggle" type="checkbox" aria-label="Toggle navigation menu" />
-  <div class="cr-header-inner">
-    <a class="cr-logo" href="/" aria-label={`${siteTitle} home`}>
-      <img src={logo} alt={siteTitle} data-tina-field={seo?tinaField(seo,'logo'):undefined} />
+
+<header class="cr-exact-header" data-brand-header>
+  <div class="cr-exact-header__inner">
+    <a class="cr-exact-header__logo" href="/" aria-label={`${siteTitle} home`}>
+      <img
+        src={logo}
+        alt={siteTitle}
+        data-tina-field={seo ? tinaField(seo, 'logo') : undefined}
+      />
     </a>
-    <label class="cr-menu-button" for="cr-nav-toggle" aria-label="Open navigation"><span></span><span></span><span></span></label>
-    <nav class="cr-nav" aria-label={navigation?.title||'Primary navigation'}>
-      {menuItems.map((item,index)=><a href={item.href||'#'} data-tina-field={configured.length?tinaField(item,'label'):undefined}><sup>{String(index+1).padStart(2,'0')}</sup>{item.label}</a>)}
+    <nav
+      class="cr-exact-header__nav"
+      aria-label={navigation?.title || 'Primary navigation'}
+    >
+      {
+        menuItems.map((item, index) => (
+          <a
+            href={item.href || '#'}
+            data-tina-field={configured.length ? tinaField(item, 'label') : undefined}
+          >
+            <sup>{String(index + 1).padStart(2, '0')}</sup>
+            {item.label}
+          </a>
+        ))
+      }
     </nav>
   </div>
 </header>

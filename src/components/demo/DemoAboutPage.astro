@@ -1,5 +1,6 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
+
 const { data = null } = Astro.props;
 const block = Array.isArray(data?.blocks) ? data.blocks[0] : data;
 const hero = block?.hero || {};
@@ -8,51 +9,86 @@ const coverage = block?.coverage || {};
 const standards = block?.standardsSection || {};
 const coverageItems = Array.isArray(coverage?.items) ? coverage.items : [];
 const standardItems = Array.isArray(standards?.items) ? standards.items : [];
+const preferenceClaims = String(purpose?.paragraphTwo || '')
+  .split(/(?<=\.)\s+/)
+  .map((sentence) => sentence.replace(/^We prefer\s+/i, '').trim())
+  .filter(Boolean)
+  .slice(0, 2);
 ---
 
-<main class="ffn-demo cr-about">
-  <section class="cr-about-hero"><div class="w cr-about-hero-grid">
-    <div class="cr-about-copy">
-      <div class="eye"><i></i><span data-tina-field={tinaField(hero,'eyebrow')}>{hero.eyebrow}</span></div>
-      <h1 data-tina-field={tinaField(hero,'headline')}>{hero.headline}</h1>
-      <p data-tina-field={tinaField(hero,'lede')}>{hero.lede}</p>
-    </div>
-    <figure class="cr-about-visual">
-      <img src={hero.image} alt={hero.imageAlt || ''} data-tina-field={tinaField(hero,'image')} />
-      <blockquote data-tina-field={tinaField(hero,'quote')}>“{hero.quote}”</blockquote>
-    </figure>
-  </div></section>
-
-  <section class="cr-about-newsroom"><div class="w cr-about-newsroom-grid">
-    <div class="cr-about-newsroom-intro">
-      <div class="eye"><i></i><span data-tina-field={tinaField(purpose,'eyebrow')}>{purpose.eyebrow}</span></div>
-      <h2 data-tina-field={tinaField(purpose,'title')}>{purpose.title}</h2>
-      <a href="/our-team/">Meet the team →</a>
-    </div>
-    <div class="cr-about-newsroom-copy">
-      <p data-tina-field={tinaField(purpose,'paragraphOne')}>{purpose.paragraphOne}</p>
-      <p data-tina-field={tinaField(purpose,'paragraphTwo')}>{purpose.paragraphTwo}</p>
-      <div class="cr-about-pref-grid">
-        <article><b>We prefer</b><p>Named sources to anonymous ones.</p></article>
-        <article><b>We prefer</b><p>Verifiable claims to insider chatter.</p></article>
+<main class="cr-exact-about">
+  <section class="cr-exact-about__hero">
+    <div class="cr-exact-about__hero-grid">
+      <div class="cr-exact-about__hero-copy">
+        <span class="cr-exact-about__pill" data-tina-field={tinaField(hero, 'eyebrow')}><i></i>{hero.eyebrow}</span>
+        <h1 data-tina-field={tinaField(hero, 'headline')}>{hero.headline}</h1>
+        <p class="cr-exact-about__lede" data-tina-field={tinaField(hero, 'lede')}>{hero.lede}</p>
+      </div>
+      <div class="cr-exact-about__hero-image">
+        <img src={hero.image} alt={hero.imageAlt || ''} data-tina-field={tinaField(hero, 'image')} />
+        <div class="cr-exact-about__quote"><div data-tina-field={tinaField(hero, 'quote')}>“{hero.quote}”</div></div>
       </div>
     </div>
-  </div></section>
+  </section>
 
-  <section class="cr-about-coverage"><div class="w">
-    <div class="eye light"><i></i><span data-tina-field={tinaField(coverage,'eyebrow')}>{coverage.eyebrow}</span></div>
-    <h2 data-tina-field={tinaField(coverage,'title')}>{coverage.title}</h2>
-    <p class="cr-about-coverage-intro" data-tina-field={tinaField(coverage,'intro')}>{coverage.intro}</p>
-    <div class="cr-about-coverage-grid">
-      {coverageItems.map((item:any,index:number)=><a class:list={['cr-about-coverage-card',index===0&&'feature']} href={item.link||'#'}>
-        <img src={item.image} alt={item.imageAlt||''} data-tina-field={tinaField(item,'image')} />
-        <span class="shade"></span><span class="copy"><small>{item.number}</small><strong data-tina-field={tinaField(item,'title')}>{item.title}</strong><em data-tina-field={tinaField(item,'text')}>{item.text}</em></span>
-      </a>)}
+  <section class="cr-exact-about__purpose">
+    <div class="cr-exact-about__purpose-grid">
+      <div class="cr-exact-about__purpose-heading">
+        <div class="cr-exact-about__eyebrow" data-tina-field={tinaField(purpose, 'eyebrow')}>{purpose.eyebrow}</div>
+        <h2 data-tina-field={tinaField(purpose, 'title')}>{purpose.title}</h2>
+      </div>
+      <div class="cr-exact-about__purpose-copy">
+        <p data-tina-field={tinaField(purpose, 'paragraphOne')}>{purpose.paragraphOne}</p>
+        <div class="cr-exact-about__preferences">
+          {preferenceClaims.map((claim) => <div data-tina-field={tinaField(purpose, 'paragraphTwo')}><b>We prefer</b><strong>{claim}</strong></div>)}
+        </div>
+        <p data-tina-field={tinaField(purpose, 'paragraphTwo')}>{purpose.paragraphTwo}</p>
+      </div>
     </div>
-  </div></section>
+  </section>
 
-  <section class="cr-about-commitments"><div class="w">
-    <div class="cr-about-commitments-head"><div><div class="eye"><i></i><span data-tina-field={tinaField(standards,'eyebrow')}>{standards.eyebrow}</span></div><h2 data-tina-field={tinaField(standards,'title')}>{standards.title}</h2></div><a href="/editorial-guidelines/">Read our editorial guidelines →</a></div>
-    <div class="cr-about-commitments-grid">{standardItems.map((item:any)=><article><span data-tina-field={tinaField(item,'number')}>{item.number}</span><h3 data-tina-field={tinaField(item,'title')}>{item.title}</h3><p data-tina-field={tinaField(item,'text')}>{item.text}</p></article>)}</div>
-  </div></section>
+  <section class="cr-exact-about__coverage">
+    <div class="cr-exact-about__coverage-inner">
+      <div class="cr-exact-about__section-head">
+        <div>
+          <div class="cr-exact-about__eyebrow cr-exact-about__eyebrow--light" data-tina-field={tinaField(coverage, 'eyebrow')}>{coverage.eyebrow}</div>
+          <h2 data-tina-field={tinaField(coverage, 'title')}>{coverage.title}</h2>
+          {coverage.intro && <p data-tina-field={tinaField(coverage, 'intro')}>{coverage.intro}</p>}
+        </div>
+      </div>
+      <div class="cr-exact-about__coverage-grid">
+        {coverageItems.map((item: any, index: number) => (
+          <a class:list={['cr-exact-about__coverage-card', index === 0 && 'is-featured']} href={item.link || '#'}>
+            <img src={item.image} alt={item.imageAlt || ''} data-tina-field={tinaField(item, 'image')} />
+            <span class="cr-exact-about__shade"></span>
+            <span class="cr-exact-about__coverage-copy">
+              {item.number && <small data-tina-field={tinaField(item, 'number')}>{item.number}</small>}
+              <strong data-tina-field={tinaField(item, 'title')}>{item.title}</strong>
+              <span data-tina-field={tinaField(item, 'text')}>{item.text}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="cr-exact-about__standards">
+    <div class="cr-exact-about__standards-head">
+      <div>
+        <div class="cr-exact-about__eyebrow" data-tina-field={tinaField(standards, 'eyebrow')}>{standards.eyebrow}</div>
+        <h2 data-tina-field={tinaField(standards, 'title')}>{standards.title}</h2>
+        {standards.intro && <p data-tina-field={tinaField(standards, 'intro')}>{standards.intro}</p>}
+      </div>
+      <a href="/editorial-guidelines/">Editorial guidelines →</a>
+    </div>
+    <div class="cr-exact-about__standards-grid">
+      {standardItems.map((item: any, index: number) => (
+        <article class:list={[index === 0 && 'is-accent']}>
+          {item.number && <small data-tina-field={tinaField(item, 'number')}>{item.number}</small>}
+          <h3 data-tina-field={tinaField(item, 'title')}>{item.title}</h3>
+          <p data-tina-field={tinaField(item, 'text')}>{item.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
 </main>

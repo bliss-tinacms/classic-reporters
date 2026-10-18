@@ -1,13 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import Demo404 from '../components/demo/Demo404.astro';
-import { listBlogs } from '../lib/data';
-
-const title = '404 | Page Not Found | Classic Reporters';
-const description = 'The page you are looking for may have moved, been removed, or never existed.';
-const posts = (await listBlogs()).slice(0, 3);
+const sections=[['U.S. News','/us-news/'],['World News','/world-news/'],['Business','/business/'],['Technology','/technology/'],['Health','/health/'],['Entertainment','/entertainment/'],['Lifestyle','/lifestyle/']];
 ---
-
-<Base title={title} description={description} noindex={true}>
-  <Demo404 posts={posts} />
+<Base title="Page Not Found" description="The requested page could not be found.">
+  <main class="cr-exact-404 crx-wrap"><div class="crx-404-grid"><div class="crx-404-num">404</div><div class="crx-404-copy"><span class="crx-kicker">● &nbsp; Page not found</span><h1>We couldn’t find that page.</h1><p>The link may be broken, or the page may have moved. If you followed a link from one of our articles, let the newsroom know and we’ll fix it.</p><div class="crx-actions"><a href="/">Back to the homepage</a><a href="/contact/">Report a broken link</a></div></div></div><div class="crx-browse"><span class="crx-kicker">Browse a section</span><div>{sections.map(([label,href])=><a href={href}>{label}</a>)}</div></div></main>
 </Base>
