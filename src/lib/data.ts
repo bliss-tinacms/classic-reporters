@@ -229,9 +229,9 @@ function tinaProxyEndpoints() {
 	// Public pages must still prefer saved Tina backend data over deployed local fallbacks, so
 	// call Tina Cloud directly from SSR using the public client ID + token.
 	const endpoints = [
+		tinaDirectContentApiUrl(),
 		process.env.TINA_UPSTREAM_CONTENT_API_URL,
 		process.env.TINA_DIRECT_CONTENT_API_URL,
-		tinaDirectContentApiUrl(),
 	].filter(Boolean) as string[];
 	return Array.from(new Set(endpoints));
 }
