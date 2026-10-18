@@ -26,7 +26,7 @@ const preferenceClaims = String(purpose?.paragraphTwo || '')
       </div>
       <div class="cr-exact-about__hero-image">
         <img src={hero.image} alt={hero.imageAlt || ''} data-tina-field={tinaField(hero, 'image')} />
-        <div class="cr-exact-about__quote"><div data-tina-field={tinaField(hero, 'quote')}>“{hero.quote}”</div></div>
+        {hero.quote && <div class="cr-exact-about__quote"><div data-tina-field={tinaField(hero, 'quote')}>“{hero.quote}”</div></div>}
       </div>
     </div>
   </section>
