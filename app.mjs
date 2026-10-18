@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 // protected runtime environment relative to this startup file first so CMS
 // saves remain Tina-first instead of silently falling back to deployed files.
 const appRoot = dirname(fileURLToPath(import.meta.url));
-const envFile = [process.env.SITE_ENV_FILE, join(appRoot, '.env'), resolve('.env')]
+const envFile = [join(appRoot, '.env'), process.env.SITE_ENV_FILE, resolve('.env')]
   .filter(Boolean)
   .find((candidate) => existsSync(candidate));
 
