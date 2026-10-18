@@ -1,6 +1,14 @@
 import { readFileSync, existsSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-for (const envFile of ['.env', process.env.SITE_ENV_FILE].filter(Boolean)) {
+// Passenger may start Node with the public document root as cwd. Resolve the
+// protected runtime environment relative to this startup file first so CMS
+// saves remain Tina-first instead of silently falling back to deployed files.
+const appRoot = dirname(fileURLToPath(import.meta.url));
+const envFiles = [process.env.SITE_ENV_FILE, join(appRoot, '.env'), resolve('.env')].filter(Boolean);
+
+for (const envFile of envFiles) {
   if (!existsSync(envFile)) continue;
   const content = readFileSync(envFile, 'utf8');
   for (const rawLine of content.split(/\r?\n/)) {
