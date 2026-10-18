@@ -88,7 +88,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const response = await next();
   const contentType = response.headers.get('content-type') || '';
   if (contentType.includes('text/html')) {
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    // `no-transform` prevents Cloudflare Scrape Shield from replacing public
+    // email addresses with `[email protected]` placeholders and decoder markup.
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, no-transform');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
   }

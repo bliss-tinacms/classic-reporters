@@ -1,5 +1,6 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
+import '../../styles/classic-contact-exact-v2.css';
 
 const { data = null, config = null } = Astro.props;
 const block = Array.isArray(data?.blocks) ? data.blocks[0] : data;
@@ -11,66 +12,71 @@ const inboxCards = Array.isArray(inboxes?.cards) ? inboxes.cards : [];
 const requestCards = Array.isArray(requests?.cards) ? requests.cards : [];
 const formAction = formSection.formAction || config?.contactForm?.formspreeEndpoint || '';
 const formConfigured = /^https:\/\/formspree\.io\/f\/[A-Za-z0-9_-]+$/.test(formAction);
+
+const headline = String(hero.headline || '');
+const headlineAccent = headline.match(/^(.*?)(newsroom\.?)(\s*)$/i);
+const publicEmailPattern = /([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})/gi;
+const messageParts = (value: unknown) => String(value || '').split(publicEmailPattern);
 ---
 
-<main class="cr-exact-contact">
-  <section class="cr-exact-contact__hero">
-    <span class="cr-exact-contact__pill" data-tina-field={tinaField(hero, 'eyebrow')}><i></i>{hero.eyebrow}</span>
-    <div class="cr-exact-contact__hero-grid">
-      <h1 data-tina-field={tinaField(hero, 'headline')}>{hero.headline}</h1>
+<main class="cr-contact-v2" data-cfemail-obfuscation="off">
+  <section class="cr-contact-v2__hero">
+    <span class="cr-contact-v2__pill" data-tina-field={tinaField(hero, 'eyebrow')}><span></span>{hero.eyebrow}</span>
+    <div class="cr-contact-v2__hero-grid">
+      <h1 data-tina-field={tinaField(hero, 'headline')}>
+        {headlineAccent ? <>{headlineAccent[1]}<em>{headlineAccent[2]}</em>{headlineAccent[3]}</> : headline}
+      </h1>
       <p data-tina-field={tinaField(hero, 'lede')}>{hero.lede}</p>
     </div>
   </section>
 
-  <section class="cr-exact-contact__main-grid">
-    <div class="cr-exact-contact__form-column">
-      <div class="cr-exact-contact__eyebrow" data-tina-field={tinaField(formSection, 'eyebrow')}>{formSection.eyebrow}</div>
+  <section class="cr-contact-v2__main-grid">
+    <div>
+      <div class="cr-contact-v2__eyebrow" data-tina-field={tinaField(formSection, 'eyebrow')}>{formSection.eyebrow}</div>
       <h2 data-tina-field={tinaField(formSection, 'title')}>{formSection.title}</h2>
-      {formSection.description && <p class="cr-exact-contact__description" data-tina-field={tinaField(formSection, 'description')}>{formSection.description}</p>}
       <form method="POST" action={formConfigured ? formAction : undefined}>
         <input type="hidden" name="_subject" value={formSection.subject || 'Classic Reporters contact form submission'} />
-        <label>Name<input type="text" name="full_name" placeholder="Your full name" required /></label>
+        <label>Name<input type="text" name="name" placeholder="Your full name" required /></label>
         <label>Phone<input type="tel" name="phone" placeholder="(555) 123-4567" /></label>
-        <label class="cr-exact-contact__wide">Email<input type="email" name="email" placeholder="you@example.com" required /></label>
-        <label class="cr-exact-contact__wide">Message<textarea name="message" rows="6" placeholder="How can we help?" required></textarea></label>
-        <div class="cr-exact-contact__form-foot">
+        <label class="cr-contact-v2__wide">Email<input type="email" name="email" placeholder="you@example.com" required /></label>
+        <label class="cr-contact-v2__wide">Message<textarea name="message" rows="6" placeholder="How can we help?" required></textarea></label>
+        <div class="cr-contact-v2__form-foot">
           <span data-tina-field={tinaField(formSection, 'note')}>{formSection.note || 'Name, email, and message are required.'}</span>
           <button type="submit" disabled={!formConfigured} aria-disabled={!formConfigured} data-tina-field={tinaField(formSection, 'buttonText')}>
-            {formConfigured ? (formSection.buttonText || 'Send message →') : 'Configure Formspree to enable'}
+            {formConfigured ? `${formSection.buttonText || 'Send message'} →` : 'Configure Formspree to enable'}
           </button>
         </div>
       </form>
     </div>
 
-    <div class="cr-exact-contact__requests">
-      {(requests.eyebrow || requests.title || requests.intro) && <div class="cr-exact-contact__requests-head">
-        {requests.eyebrow && <div class="cr-exact-contact__eyebrow" data-tina-field={tinaField(requests, 'eyebrow')}>{requests.eyebrow}</div>}
-        {requests.title && <h2 data-tina-field={tinaField(requests, 'title')}>{requests.title}</h2>}
-        {requests.intro && <p data-tina-field={tinaField(requests, 'intro')}>{requests.intro}</p>}
-      </div>}
+    <div class="cr-contact-v2__requests">
       {requestCards.map((card: any) => (
-        <article>
+        <div class="cr-contact-v2__request-card">
           <h3 data-tina-field={tinaField(card, 'title')}>{card.title}</h3>
-          <p data-tina-field={tinaField(card, 'text')}>{card.text}</p>
-        </article>
+          <p data-tina-field={tinaField(card, 'text')}>
+            {messageParts(card.text).map((part, partIndex) =>
+              partIndex % 2 === 1
+                ? <a href={`mailto:${part}`} data-cfemail-obfuscation="off">{part}</a>
+                : part
+            )}
+          </p>
+        </div>
       ))}
     </div>
   </section>
 
-  <section class="cr-exact-contact__inboxes">
-    {(inboxes.eyebrow || inboxes.title) && <header>
-      {inboxes.eyebrow && <div class="cr-exact-contact__eyebrow" data-tina-field={tinaField(inboxes, 'eyebrow')}>{inboxes.eyebrow}</div>}
-      {inboxes.title && <h2 data-tina-field={tinaField(inboxes, 'title')}>{inboxes.title}</h2>}
-    </header>}
-    <div class="cr-exact-contact__inbox-grid">
-      {inboxCards.map((card: any, index: number) => (
-        <article class:list={[index === 0 && 'is-dark']}>
-          <div class="cr-exact-contact__eyebrow" data-tina-field={tinaField(card, 'title')}>{card.title}</div>
-          <a href={`mailto:${card.email}`} data-tina-field={tinaField(card, 'email')}>{card.email}</a>
-          <p data-tina-field={tinaField(card, 'description')}>{card.description}</p>
-          {card.note && <div class="cr-exact-contact__inbox-note" data-tina-field={tinaField(card, 'note')}>{card.note}</div>}
-        </article>
-      ))}
-    </div>
+  <section class="cr-contact-v2__inboxes">
+    {inboxCards.map((card: any, index: number) => (
+      <div class:list={['cr-contact-v2__inbox-card', index === 0 && 'is-dark']}>
+        <div class="cr-contact-v2__eyebrow" data-tina-field={tinaField(card, 'title')}>{card.title}</div>
+        <a href={`mailto:${card.email}`} data-cfemail-obfuscation="off" data-tina-field={tinaField(card, 'email')}>{card.email}</a>
+        <p data-tina-field={tinaField(card, 'description')}>{card.description}</p>
+        {card.note && (
+          index === 0
+            ? <p class="cr-contact-v2__sensitive" data-tina-field={tinaField(card, 'note')}><strong>Sensitive tip?</strong> {String(card.note).replace(/^Sensitive tip\?\s*/i, '')}</p>
+            : <div class="cr-contact-v2__hours" data-tina-field={tinaField(card, 'note')}><span></span>{card.note}</div>
+        )}
+      </div>
+    ))}
   </section>
 </main>

@@ -7,7 +7,7 @@ import PageBody from '../components/islands/PageBody.astro';
 import BlogBody from '../components/islands/BlogBody.astro';
 import DemoCategoryArchive from '../components/demo/DemoCategoryArchive.astro';
 import Demo404 from '../components/demo/Demo404.astro';
-import { getBlog, getCategory, getConfig, getPublicPage, listBlogs, listCategories, listPages, type CmsCategory, type CmsPage } from '../lib/data';
+import { getBlog, getCategory, getConfig, getPublicPage, getUser, listBlogs, listCategories, listPages, type CmsCategory, type CmsPage } from '../lib/data';
 import { islands } from '../lib/islands';
 
 export const prerender = false;
@@ -142,6 +142,14 @@ if (view === 'not-found') {
   const blog = await getBlog(documentSlug);
   const data = blog.data?.blog;
   if (data?.title || data?._sys?.filename) {
+      // Tina Cloud resolves references, while the filesystem fallback preserves the
+      // reference path. Resolve that fallback too so author avatar/bio remain dynamic
+      // and identical in local, degraded, and live rendering modes.
+      if (typeof data.author === 'string') {
+        const authorSlug = data.author.split('/').pop()?.replace(/\.json$/i, '') || '';
+        const resolvedAuthor = authorSlug ? (await getUser(authorSlug)).data?.user : null;
+        if (resolvedAuthor) data.author = resolvedAuthor as any;
+      }
       const canonicalSlug = getBlogRouteSlug(data);
       if (canonicalSlug && canonicalSlug !== routeSlug) return Astro.redirect(getBlogPermalink(data) + '/', 301);
       const currentCategoryKeys = getReferenceKeys(getPostCategories(data));

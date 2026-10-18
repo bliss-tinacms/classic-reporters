@@ -1,5 +1,6 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
+import '../../styles/classic-about-exact-v2.css';
 
 const { data = null } = Astro.props;
 const block = Array.isArray(data?.blocks) ? data.blocks[0] : data;
@@ -7,87 +8,114 @@ const hero = block?.hero || {};
 const purpose = block?.purpose || {};
 const coverage = block?.coverage || {};
 const standards = block?.standardsSection || {};
+const independence = block?.independence || {};
 const coverageItems = Array.isArray(coverage?.items) ? coverage.items : [];
 const standardItems = Array.isArray(standards?.items) ? standards.items : [];
+
+const headline = String(hero?.headline || '');
+const headlineMatch = headline.match(/(?:the\s+)?\S+[.!?]?$/i);
+const headlineAccent = headlineMatch?.[0] || '';
+const headlineLead = headline.slice(0, headline.length - headlineAccent.length);
+
 const preferenceClaims = String(purpose?.paragraphTwo || '')
   .split(/(?<=\.)\s+/)
-  .map((sentence) => sentence.replace(/^We prefer\s+/i, '').trim())
-  .filter(Boolean)
+  .map((sentence) => ({
+    label: sentence.match(/^We prefer/i)?.[0] || '',
+    claim: sentence.replace(/^We prefer\s+/i, '').trim(),
+  }))
+  .filter(({ claim }) => Boolean(claim))
   .slice(0, 2);
+const purposeParagraph = String(purpose?.paragraphOne || '');
+const teamLabel = 'Our Team';
+const teamLabelIndex = purposeParagraph.indexOf(teamLabel);
+const purposeBeforeTeam = teamLabelIndex >= 0 ? purposeParagraph.slice(0, teamLabelIndex) : purposeParagraph;
+const purposeAfterTeam = teamLabelIndex >= 0 ? purposeParagraph.slice(teamLabelIndex + teamLabel.length) : '';
 ---
 
-<main class="cr-exact-about">
-  <section class="cr-exact-about__hero">
-    <div class="cr-exact-about__hero-grid">
-      <div class="cr-exact-about__hero-copy">
-        <span class="cr-exact-about__pill" data-tina-field={tinaField(hero, 'eyebrow')}><i></i>{hero.eyebrow}</span>
-        <h1 data-tina-field={tinaField(hero, 'headline')}>{hero.headline}</h1>
-        <p class="cr-exact-about__lede" data-tina-field={tinaField(hero, 'lede')}>{hero.lede}</p>
+<main class="cr-about-v2">
+  <section class="cr-about-v2__hero">
+    <div class="cr-about-v2__hero-grid">
+      <div class="cr-about-v2__hero-copy">
+        <span class="cr-about-v2__pill" data-tina-field={tinaField(hero, 'eyebrow')}>
+          <span class="cr-about-v2__pill-dot"></span>{hero.eyebrow}
+        </span>
+        <h1 data-tina-field={tinaField(hero, 'headline')}>{headlineLead}<em>{headlineAccent}</em></h1>
+        <p class="cr-about-v2__lede" data-tina-field={tinaField(hero, 'lede')}>{hero.lede}</p>
+        <p class="cr-about-v2__sublede">The site covers the day’s news and holds itself to the working standards that have long defined serious American journalism.</p>
       </div>
-      <div class="cr-exact-about__hero-image">
+      <div class="cr-about-v2__hero-image">
         <img src={hero.image} alt={hero.imageAlt || ''} data-tina-field={tinaField(hero, 'image')} />
-        {hero.quote && <div class="cr-exact-about__quote"><div data-tina-field={tinaField(hero, 'quote')}>“{hero.quote}”</div></div>}
+        {hero.quote && (
+          <div class="cr-about-v2__quote">
+            <div data-tina-field={tinaField(hero, 'quote')}>“{hero.quote}”</div>
+          </div>
+        )}
       </div>
     </div>
   </section>
 
-  <section class="cr-exact-about__purpose">
-    <div class="cr-exact-about__purpose-grid">
-      <div class="cr-exact-about__purpose-heading">
-        <div class="cr-exact-about__eyebrow" data-tina-field={tinaField(purpose, 'eyebrow')}>{purpose.eyebrow}</div>
+  <section class="cr-about-v2__purpose">
+    <div class="cr-about-v2__purpose-grid">
+      <div class="cr-about-v2__purpose-heading">
+        <div class="cr-about-v2__eyebrow" data-tina-field={tinaField(purpose, 'eyebrow')}>{purpose.eyebrow}</div>
         <h2 data-tina-field={tinaField(purpose, 'title')}>{purpose.title}</h2>
       </div>
-      <div class="cr-exact-about__purpose-copy">
-        <p data-tina-field={tinaField(purpose, 'paragraphOne')}>{purpose.paragraphOne}</p>
-        <div class="cr-exact-about__preferences">
-          {preferenceClaims.map((claim) => <div data-tina-field={tinaField(purpose, 'paragraphTwo')}><b>We prefer</b><strong>{claim}</strong></div>)}
+      <div class="cr-about-v2__purpose-copy">
+        <p data-tina-field={tinaField(purpose, 'paragraphOne')}>
+          {purposeBeforeTeam}{teamLabelIndex >= 0 && <a href="/our-team/">{teamLabel}</a>}{purposeAfterTeam}
+        </p>
+        <div class="cr-about-v2__preferences">
+          {preferenceClaims.map(({ label, claim }) => (
+            <div class="cr-about-v2__preference" data-tina-field={tinaField(purpose, 'paragraphTwo')}>
+              <div class="cr-about-v2__preference-label">{label}</div>
+              <div class="cr-about-v2__preference-text">{claim}</div>
+            </div>
+          ))}
         </div>
-        <p data-tina-field={tinaField(purpose, 'paragraphTwo')}>{purpose.paragraphTwo}</p>
+        <p data-tina-field={tinaField(purpose, 'pullquote')}>{purpose.pullquote}</p>
       </div>
     </div>
   </section>
 
-  <section class="cr-exact-about__coverage">
-    <div class="cr-exact-about__coverage-inner">
-      <div class="cr-exact-about__section-head">
+  <section class="cr-about-v2__coverage">
+    <div class="cr-about-v2__coverage-inner">
+      <div class="cr-about-v2__section-head">
         <div>
-          <div class="cr-exact-about__eyebrow cr-exact-about__eyebrow--light" data-tina-field={tinaField(coverage, 'eyebrow')}>{coverage.eyebrow}</div>
+          <div class="cr-about-v2__eyebrow cr-about-v2__eyebrow--light" data-tina-field={tinaField(coverage, 'eyebrow')}>{coverage.eyebrow}</div>
           <h2 data-tina-field={tinaField(coverage, 'title')}>{coverage.title}</h2>
-          {coverage.intro && <p data-tina-field={tinaField(coverage, 'intro')}>{coverage.intro}</p>}
         </div>
       </div>
-      <div class="cr-exact-about__coverage-grid">
-        {coverageItems.map((item: any, index: number) => (
-          <a class:list={['cr-exact-about__coverage-card', index === 0 && 'is-featured']} href={item.link || '#'}>
+      <div class="cr-about-v2__coverage-grid">
+        {coverageItems.map((item: any) => (
+          <div class="cr-about-v2__coverage-card">
             <img src={item.image} alt={item.imageAlt || ''} data-tina-field={tinaField(item, 'image')} />
-            <span class="cr-exact-about__shade"></span>
-            <span class="cr-exact-about__coverage-copy">
-              {item.number && <small data-tina-field={tinaField(item, 'number')}>{item.number}</small>}
-              <strong data-tina-field={tinaField(item, 'title')}>{item.title}</strong>
-              <span data-tina-field={tinaField(item, 'text')}>{item.text}</span>
+            <span class="cr-about-v2__shade"></span>
+            <span class="cr-about-v2__coverage-copy">
+              <span class="cr-about-v2__coverage-title" data-tina-field={tinaField(item, 'title')}>{item.title}</span>
+              <span class="cr-about-v2__coverage-text" data-tina-field={tinaField(item, 'text')}>{item.text}</span>
             </span>
-          </a>
+          </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="cr-exact-about__standards">
-    <div class="cr-exact-about__standards-head">
+  <section class="cr-about-v2__standards">
+    <div class="cr-about-v2__standards-head">
       <div>
-        <div class="cr-exact-about__eyebrow" data-tina-field={tinaField(standards, 'eyebrow')}>{standards.eyebrow}</div>
+        <div class="cr-about-v2__eyebrow" data-tina-field={tinaField(standards, 'eyebrow')}>{standards.eyebrow}</div>
         <h2 data-tina-field={tinaField(standards, 'title')}>{standards.title}</h2>
-        {standards.intro && <p data-tina-field={tinaField(standards, 'intro')}>{standards.intro}</p>}
       </div>
-      <a href="/editorial-guidelines/">Editorial guidelines →</a>
+      <a href={independence.buttonLink || '/editorial-guidelines/'} data-tina-field={tinaField(independence, 'buttonText')}>
+        {independence.buttonText || 'Editorial guidelines'} →
+      </a>
     </div>
-    <div class="cr-exact-about__standards-grid">
-      {standardItems.map((item: any, index: number) => (
-        <article class:list={[index === 0 && 'is-accent']}>
-          {item.number && <small data-tina-field={tinaField(item, 'number')}>{item.number}</small>}
+    <div class="cr-about-v2__standards-grid">
+      {standardItems.map((item: any) => (
+        <div class="cr-about-v2__standard">
           <h3 data-tina-field={tinaField(item, 'title')}>{item.title}</h3>
           <p data-tina-field={tinaField(item, 'text')}>{item.text}</p>
-        </article>
+        </div>
       ))}
     </div>
   </section>

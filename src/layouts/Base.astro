@@ -44,10 +44,13 @@ const defaultSocialImage = config?.seo?.defaultSocialImage || undefined;
 		{headerCode && <Fragment set:html={headerCode} />}
 	</head>
 	<body>
+		{/* Cloudflare Email Address Obfuscation must never rewrite public-site email links. */}
+		<Fragment set:html={'<!--email_off-->'} />
 		<div class="tr"></div>
 		<Header config={config} navigation={headerNavigation} />
 		<slot />
 		<Footer config={config} navigation={footerNavigation} />
 		{footerCode && <Fragment set:html={footerCode} />}
+		<Fragment set:html={'<!--/email_off-->'} />
 	</body>
 </html>

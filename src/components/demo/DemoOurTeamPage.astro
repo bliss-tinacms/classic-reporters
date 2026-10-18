@@ -1,5 +1,6 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
+import '../../styles/classic-team-exact-v2.css';
 
 const { data = null } = Astro.props;
 const block = Array.isArray(data?.blocks) ? data.blocks[0] : data;
@@ -8,36 +9,44 @@ const leadership = block?.leadership || {};
 const seniorStaff = block?.seniorStaff || {};
 const people = Array.isArray(leadership?.people) ? leadership.people : [];
 const seniorPeople = Array.isArray(seniorStaff?.people) ? seniorStaff.people : [];
+
+const headline = String(hero?.headline || '');
+const headlineMatch = headline.match(/(?:the\s+)?\S+[.!?]?$/i);
+const headlineAccent = headlineMatch?.[0] || '';
+const headlineLead = headline.slice(0, headline.length - headlineAccent.length);
 ---
 
-<main class="cr-exact-team">
-  <section class="cr-exact-team__hero">
-    <span class="cr-exact-team__pill" data-tina-field={tinaField(hero, 'eyebrow')}><i></i>{hero.eyebrow}</span>
-    <div class="cr-exact-team__hero-grid">
-      <h1 data-tina-field={tinaField(hero, 'headline')}>{hero.headline}</h1>
+<main class="cr-team-v2">
+  <section class="cr-team-v2__hero">
+    <span class="cr-team-v2__pill" data-tina-field={tinaField(hero, 'eyebrow')}>
+      <span class="cr-team-v2__pill-dot"></span>{hero.eyebrow}
+    </span>
+    <div class="cr-team-v2__hero-grid">
+      <h1 data-tina-field={tinaField(hero, 'headline')}>{headlineLead}<em>{headlineAccent}</em></h1>
       <p data-tina-field={tinaField(hero, 'lede')}>{hero.lede}</p>
     </div>
   </section>
 
-  <section class="cr-exact-team__leadership">
-    <div class="cr-exact-team__eyebrow" data-tina-field={tinaField(leadership, 'eyebrow')}>{leadership.eyebrow}</div>
-    {leadership.title && <h2 class="cr-exact-team__section-title" data-tina-field={tinaField(leadership, 'title')}>{leadership.title}</h2>}
-    <div class="cr-exact-team__leaders">
+  <section class="cr-team-v2__leadership">
+    <div class="cr-team-v2__eyebrow" data-tina-field={tinaField(leadership, 'eyebrow')}>{leadership.eyebrow}</div>
+    <div class="cr-team-v2__leaders">
       {people.map((person: any) => (
-        <article class="cr-exact-team__leader">
+        <article class="cr-team-v2__leader">
           {person.image
             ? <img src={person.image} alt={person.imageAlt || person.name || ''} data-tina-field={tinaField(person, 'image')} />
-            : <div class="cr-exact-team__leader-placeholder" aria-hidden="true"></div>}
-          <div class="cr-exact-team__leader-copy">
-            <div class="cr-exact-team__badges">
-              <span data-tina-field={tinaField(person, 'role')}>{person.role}</span>
-              <span class="cr-exact-team__location" data-tina-field={tinaField(person, 'location')}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>{person.location}
+            : <div class="cr-team-v2__leader-placeholder" aria-hidden="true"></div>}
+          <div class="cr-team-v2__leader-copy">
+            <div class="cr-team-v2__badges">
+              <span class="cr-team-v2__role" data-tina-field={tinaField(person, 'role')}>{person.role}</span>
+              <span class="cr-team-v2__location" data-tina-field={tinaField(person, 'location')}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path>
+                  <circle cx="12" cy="10" r="2.5"></circle>
+                </svg>{person.location}
               </span>
             </div>
             <h2 data-tina-field={tinaField(person, 'name')}>{person.name}</h2>
             <p data-tina-field={tinaField(person, 'bio')}>{person.bio}</p>
-            {(person.experience || person.focus) && <div class="cr-exact-team__extra"><span>{person.experience}</span><span>{person.focus}</span></div>}
           </div>
         </article>
       ))}
@@ -45,29 +54,31 @@ const seniorPeople = Array.isArray(seniorStaff?.people) ? seniorStaff.people : [
   </section>
 
   {seniorPeople.length > 0 && (
-    <section class="cr-exact-team__senior">
-      <div class="cr-exact-team__senior-head">
+    <section class="cr-team-v2__senior">
+      <div class="cr-team-v2__senior-head">
         <div>
-          <div class="cr-exact-team__eyebrow" data-tina-field={tinaField(seniorStaff, 'eyebrow')}>{seniorStaff.eyebrow}</div>
+          <div class="cr-team-v2__eyebrow" data-tina-field={tinaField(seniorStaff, 'eyebrow')}>{seniorStaff.eyebrow}</div>
           <h2 data-tina-field={tinaField(seniorStaff, 'title')}>{seniorStaff.title}</h2>
         </div>
       </div>
-      <div class="cr-exact-team__senior-grid">
+      <div class="cr-team-v2__senior-grid">
         {seniorPeople.map((person: any) => (
-          <article class="cr-exact-team__staff-card">
+          <article class="cr-team-v2__staff-card">
             {person.image
               ? <img src={person.image} alt={person.imageAlt || person.name || ''} data-tina-field={tinaField(person, 'image')} />
-              : <div class="cr-exact-team__staff-placeholder" aria-hidden="true"></div>}
-            <div class="cr-exact-team__staff-copy">
-              <div class="cr-exact-team__badges">
-                <span data-tina-field={tinaField(person, 'role')}>{person.role}</span>
-                <span class="cr-exact-team__location" data-tina-field={tinaField(person, 'location')}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>{person.location}
+              : <div class="cr-team-v2__staff-placeholder" aria-hidden="true"></div>}
+            <div class="cr-team-v2__staff-copy">
+              <div class="cr-team-v2__badges">
+                <span class="cr-team-v2__role" data-tina-field={tinaField(person, 'role')}>{person.role}</span>
+                <span class="cr-team-v2__location" data-tina-field={tinaField(person, 'location')}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path>
+                    <circle cx="12" cy="10" r="2.5"></circle>
+                  </svg>{person.location}
                 </span>
               </div>
               <h3 data-tina-field={tinaField(person, 'name')}>{person.name}</h3>
               <p data-tina-field={tinaField(person, 'bio')}>{person.bio}</p>
-              {(person.experience || person.focus) && <div class="cr-exact-team__extra"><span>{person.experience}</span><span>{person.focus}</span></div>}
             </div>
           </article>
         ))}

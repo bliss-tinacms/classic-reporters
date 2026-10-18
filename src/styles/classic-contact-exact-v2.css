@@ -1,0 +1,262 @@
+/* Contact body transcribed from contact-sanitized.html. Deliberately isolated from legacy site rules. */
+.cr-contact-v2 {
+  display: block;
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+  color: rgb(22, 20, 18);
+  background: rgb(255, 255, 255);
+}
+
+/* Scoped reset: the site has broad legacy element selectors that must not alter this body. */
+.cr-contact-v2.cr-contact-v2 *,
+.cr-contact-v2.cr-contact-v2 *::before,
+.cr-contact-v2.cr-contact-v2 *::after { box-sizing: border-box; }
+.cr-contact-v2.cr-contact-v2 :where(section, div, span, h1, h2, h3, p, form, label) { border: 0; }
+.cr-contact-v2.cr-contact-v2 :where(h1, h2, h3, p) { padding: 0; color: inherit; }
+.cr-contact-v2.cr-contact-v2 a { text-decoration: none; }
+.cr-contact-v2.cr-contact-v2 button,
+.cr-contact-v2.cr-contact-v2 input,
+.cr-contact-v2.cr-contact-v2 textarea { box-shadow: none; }
+
+.cr-contact-v2__hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 72px) clamp(16px, 4vw, 40px) clamp(36px, 5vw, 56px);
+}
+.cr-contact-v2__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(179, 38, 30, 0.08);
+  color: rgb(179, 38, 30);
+  font-family: "Source Serif 4", serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.cr-contact-v2__pill > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(179, 38, 30);
+}
+.cr-contact-v2__hero-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 20px clamp(32px, 5vw, 72px);
+  align-items: end;
+  margin-top: 22px;
+}
+.cr-contact-v2__hero h1 {
+  font-family: "DM Serif Display", serif;
+  font-weight: 400;
+  font-size: clamp(44px, 6.4vw, 92px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+}
+.cr-contact-v2__hero h1 em {
+  color: rgb(179, 38, 30);
+}
+.cr-contact-v2__hero-grid > p {
+  margin: 0;
+  font-size: clamp(19px, 1.6vw, 22px);
+  line-height: 1.55;
+  max-width: 540px;
+  text-wrap: pretty;
+}
+
+.cr-contact-v2__main-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 40px) clamp(16px, 4vw, 40px) clamp(48px, 6vw, 80px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 48px clamp(32px, 6vw, 96px);
+  align-items: start;
+}
+.cr-contact-v2__eyebrow {
+  font-family: "Source Serif 4", serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(179, 38, 30);
+}
+.cr-contact-v2__main-grid h2 {
+  font-family: "DM Serif Display", serif;
+  font-weight: 400;
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1.05;
+  margin: 12px 0 28px;
+}
+.cr-contact-v2__main-grid form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(220px, calc(50% - 9px)), 1fr));
+  gap: 18px;
+}
+.cr-contact-v2__main-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.cr-contact-v2__main-grid label.cr-contact-v2__wide { grid-column: 1 / -1; }
+.cr-contact-v2__main-grid input:not([type="hidden"]),
+.cr-contact-v2__main-grid textarea {
+  display: block;
+  width: 100%;
+  min-height: 54px;
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px solid rgba(22, 20, 18, 0.16);
+  border-radius: 14px;
+  background: rgb(255, 255, 255);
+  font-family: "Source Serif 4", serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgb(22, 20, 18);
+  outline: none;
+}
+.cr-contact-v2__main-grid textarea {
+  min-height: 170px;
+  resize: vertical;
+  line-height: 1.6;
+}
+.cr-contact-v2__form-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.cr-contact-v2__form-foot > span {
+  font-size: 15px;
+  opacity: 0.65;
+}
+.cr-contact-v2__form-foot button {
+  min-height: 54px;
+  margin: 0;
+  padding: 0 30px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(179, 38, 30);
+  color: rgb(255, 255, 255);
+  font-family: "Source Serif 4", serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: normal;
+  cursor: pointer;
+}
+.cr-contact-v2__form-foot button:disabled { cursor: not-allowed; }
+
+.cr-contact-v2__requests {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cr-contact-v2__request-card {
+  padding: clamp(24px, 2.6vw, 32px);
+  border-radius: 24px;
+  background: rgb(246, 241, 231);
+}
+.cr-contact-v2__request-card h3 {
+  font-family: "DM Serif Display", serif;
+  font-weight: 400;
+  font-size: clamp(24px, 2.2vw, 28px);
+  line-height: 1.15;
+  margin: 0 0 10px;
+}
+.cr-contact-v2__request-card p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.cr-contact-v2__request-card p a {
+  color: rgb(179, 38, 30);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cr-contact-v2__inboxes {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: clamp(16px, 4vw, 40px);
+  padding-right: clamp(16px, 4vw, 40px);
+  padding-bottom: clamp(56px, 8vw, 112px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: 16px;
+}
+.cr-contact-v2__inbox-card {
+  background: rgb(246, 241, 231);
+  border-radius: 28px;
+  padding: clamp(28px, 3.4vw, 44px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cr-contact-v2__inbox-card.is-dark {
+  background: rgb(22, 20, 18);
+  color: rgb(246, 241, 231);
+}
+.cr-contact-v2__inbox-card.is-dark .cr-contact-v2__eyebrow { color: rgb(232, 105, 95); }
+.cr-contact-v2__inbox-card > a {
+  font-family: "DM Serif Display", serif;
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.15;
+  color: rgb(22, 20, 18);
+  word-break: break-word;
+}
+.cr-contact-v2__inbox-card.is-dark > a { color: rgb(255, 255, 255); }
+.cr-contact-v2__inbox-card > p:not(.cr-contact-v2__sensitive) {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  opacity: 0.85;
+  text-wrap: pretty;
+}
+.cr-contact-v2__inbox-card.is-dark > p:not(.cr-contact-v2__sensitive) {
+  color: rgba(246, 241, 231, 0.85);
+  opacity: 1;
+}
+.cr-contact-v2__sensitive {
+  margin: auto 0 0;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(246, 241, 231, 0.9);
+  text-wrap: pretty;
+}
+.cr-contact-v2__sensitive strong { color: rgb(255, 255, 255); }
+.cr-contact-v2__hours {
+  margin-top: auto;
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgb(255, 255, 255);
+  font-size: 15px;
+  font-weight: 600;
+}
+.cr-contact-v2__hours > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(46, 125, 79);
+  flex: 0 0 auto;
+}
