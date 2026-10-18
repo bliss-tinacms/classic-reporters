@@ -252,7 +252,10 @@ function tinaDirectContentApiUrl() {
 }
 
 function tinaApiToken() {
-	return import.meta.env.TINA_TOKEN || process.env.TINA_TOKEN || '';
+	// Server-only secret: never reference import.meta.env here because Astro/Vite
+	// can inline its value into the built server chunk. Passenger loads it at
+	// runtime from the private app-root environment file via startup.cjs.
+	return process.env.TINA_TOKEN || '';
 }
 
 
@@ -269,11 +272,11 @@ function tinaProxyEndpoints() {
 	return Array.from(new Set(endpoints));
 }
 
-async function fetchGithubPageFrontmatter(relativePath: string) {
+async function fetchGithubFrontmatter(collection: 'blog' | 'page', relativePath: string) {
 	const branch = process.env.TINA_BRANCH || process.env.NEXT_PUBLIC_TINA_BRANCH || 'main';
-	const repo = process.env.GITHUB_CONTENT_REPO;
+	const repo = process.env.GITHUB_CONTENT_REPO || process.env.GITHUB_REPO;
 	if (!repo) return null;
-	const url = `https://raw.githubusercontent.com/${repo}/${branch}/src/content/page/${relativePath}`;
+	const url = `https://raw.githubusercontent.com/${repo}/${branch}/src/content/${collection}/${relativePath}`;
 	try {
 		const response = await fetch(url, { cache: 'no-store', headers: { 'cache-control': 'no-cache' } });
 		if (!response.ok) return null;
@@ -282,12 +285,16 @@ async function fetchGithubPageFrontmatter(relativePath: string) {
 		if (!parsed.data || !Object.keys(parsed.data).length) return null;
 		return {
 			...parsed.data,
+			body: collection === 'blog' ? markdownToTinaRichText(parsed.content) : parsed.content || undefined,
 			_sys: { filename: relativePath.replace(/\.mdx$/, '') },
 		};
 	} catch (_error) {
 		return null;
 	}
 }
+
+const fetchGithubPageFrontmatter = (relativePath: string) => fetchGithubFrontmatter('page', relativePath);
+const fetchGithubBlogFrontmatter = (relativePath: string) => fetchGithubFrontmatter('blog', relativePath);
 
 let tinaIdentityCache: { value: boolean; expires: number } | null = null;
 
@@ -605,6 +612,8 @@ export async function getBlog(slug: string) {
 	}`;
 	const liveBlog = await fetchLiveTina(query, { relativePath }, (json) => json?.data?.blog);
 	if (liveBlog) return { data: { blog: hydrateBlogCategories(hydratePermalink('blog', liveBlog as any)) } } as any;
+	const githubBlog = await fetchGithubBlogFrontmatter(relativePath);
+	if (githubBlog) return { data: { blog: hydrateBlogCategories(hydratePermalink('blog', githubBlog as any)) } } as any;
 	const localBlog = readLocalBlogFrontmatter(relativePath);
 	if (localBlog) return { data: { blog: hydrateBlogCategories(hydratePermalink('blog', localBlog as any)) } } as any;
 	return requestWithMetadata(client.queries.blog({ relativePath }), { priority: 'primary' });
