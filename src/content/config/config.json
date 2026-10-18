@@ -1,4 +1,5 @@
 {
+  "redirects": [],
   "headerNavigation": "src/content/navigation/header.json",
   "footerNavigation": "src/content/navigation/footer.json",
   "seo": {
@@ -12,10 +13,7 @@
   "footer": {
     "description": "National news, reported plainly. Original reporting, clearly attributed.",
     "editorialEmail": "editorial@classicreporters.com",
-    "generalEmail": "info@classicreporters.com",
-    "companyHeading": "Company",
-    "ctaText": "Story tips, corrections, and letters to the editor all reach a real editor.",
-    "ctaButtonText": "Contact the newsroom",
+    "ctaButtonText": "Contact the newsroom [PUBLISHER-GATE-20261018]",
     "ctaButtonLink": "/contact/"
   },
   "contactForm": {
@@ -26,11 +24,21 @@
     "note": "Name, email, and message are required.",
     "subject": "Classic Reporters contact form submission"
   },
-  "codeInjection": { "headerCode": "", "footerCode": "" },
+  "codeInjection": {
+    "headerCode": "",
+    "footerCode": ""
+  },
   "contactLinks": [
-    { "title": "Editorial", "link": "mailto:editorial@classicreporters.com", "icon": "mail" },
-    { "title": "General inquiries", "link": "mailto:info@classicreporters.com", "icon": "mail" }
+    {
+      "title": "Editorial",
+      "link": "mailto:editorial@classicreporters.com",
+      "icon": "mail"
+    },
+    {
+      "title": "General inquiries",
+      "link": "mailto:info@classicreporters.com",
+      "icon": "mail"
+    }
   ],
-  "redirects": [],
   "footerStarfield": false
 }
