@@ -284,7 +284,11 @@ async function fetchLiveTina<T>(query: string, variables?: Record<string, unknow
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), 30000);
 		try {
-			const headers: Record<string, string> = { 'content-type': 'application/json' };
+			const headers: Record<string, string> = {
+				'content-type': 'application/json',
+				accept: 'application/json',
+				'accept-encoding': 'identity',
+			};
 			const token = tinaApiToken();
 			if (token) headers['X-API-KEY'] = token;
 			const response = await fetch(endpoint, {
@@ -314,7 +318,11 @@ async function fetchLiveTinaResult<TData>(query: string, variables?: Record<stri
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), 30000);
 		try {
-			const headers: Record<string, string> = { 'content-type': 'application/json' };
+			const headers: Record<string, string> = {
+				'content-type': 'application/json',
+				accept: 'application/json',
+				'accept-encoding': 'identity',
+			};
 			const token = tinaApiToken();
 			if (token) headers['X-API-KEY'] = token;
 			const response = await fetch(endpoint, {
