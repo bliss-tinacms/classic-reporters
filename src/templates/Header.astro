@@ -47,7 +47,19 @@ const menuItems = configured.length ? configured : defaults;
         data-tina-field={seo ? tinaField(seo, 'logo') : undefined}
       />
     </a>
+    <button
+      class="cr-exact-header__menu-button"
+      type="button"
+      aria-label="Toggle navigation menu"
+      aria-controls="cr-primary-navigation"
+      aria-expanded="false"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
     <nav
+      id="cr-primary-navigation"
       class="cr-exact-header__nav"
       aria-label={navigation?.title || 'Primary navigation'}
     >
@@ -65,3 +77,42 @@ const menuItems = configured.length ? configured : defaults;
     </nav>
   </div>
 </header>
+
+<script is:inline>
+  (() => {
+    const breakpoint = window.matchMedia('(max-width: 1024px)');
+
+    document.querySelectorAll('[data-brand-header]').forEach((header) => {
+      const button = header.querySelector('.cr-exact-header__menu-button');
+      const nav = header.querySelector('.cr-exact-header__nav');
+      if (!button || !nav || button.dataset.bound === 'true') return;
+
+      button.dataset.bound = 'true';
+
+      const setOpen = (open, returnFocus = false) => {
+        const shouldOpen = breakpoint.matches && open;
+        header.classList.toggle('is-menu-open', shouldOpen);
+        button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        if (returnFocus) button.focus();
+      };
+
+      button.addEventListener('click', () => {
+        setOpen(button.getAttribute('aria-expanded') !== 'true');
+      });
+
+      nav.addEventListener('click', (event) => {
+        if (event.target.closest('a')) setOpen(false);
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
+          setOpen(false, true);
+        }
+      });
+
+      const handleBreakpoint = () => setOpen(false);
+      if (breakpoint.addEventListener) breakpoint.addEventListener('change', handleBreakpoint);
+      else breakpoint.addListener(handleBreakpoint);
+    });
+  })();
+</script>
