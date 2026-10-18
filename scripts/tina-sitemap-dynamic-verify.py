@@ -135,15 +135,15 @@ def main() -> int:
     for node in backend_pages:
         filename = node.get("_sys", {}).get("filename") or ""
         url = page_url(node)
-        if filename in {"404", "sitemap"} or url == "/sitemap/" or node.get("seo", {}).get("noindex"):
+        if filename in {"404", "sitemap"} or url == "/sitemap/" or (node.get("seo") or {}).get("noindex"):
             continue
-        expected_pages.append((url, normalize(node.get("title") or node.get("seo", {}).get("metaTitle") or filename)))
+        expected_pages.append((url, normalize(node.get("title") or (node.get("seo") or {}).get("metaTitle") or filename)))
 
     expected_posts = []
     for node in backend_posts:
-        if node.get("seo", {}).get("noindex"):
+        if (node.get("seo") or {}).get("noindex"):
             continue
-        expected_posts.append((post_url(node), normalize(node.get("title") or node.get("seo", {}).get("metaTitle") or node.get("_sys", {}).get("filename"))))
+        expected_posts.append((post_url(node), normalize(node.get("title") or (node.get("seo") or {}).get("metaTitle") or node.get("_sys", {}).get("filename"))))
 
     html = requests.get(f"{SITE}/sitemap/?v=sitemap-dynamic-verify", headers={"Cache-Control": "no-cache", "User-Agent": "HermesSitemapVerify"}, timeout=30).text
     parser = LinkCollector()
@@ -164,11 +164,11 @@ def main() -> int:
         failures.append(f"bad <title>: {parser.title_text!r}")
     if "Browse the public pages and latest reporting published by Classic Reporters." not in parser.meta.get("description", ""):
         failures.append("missing sitemap meta description")
-    if "ffn-demo-sitemap" not in html or "sitemap-panel" not in html or "Big Shoulders Display" not in html:
+    if "cr-sitemap" not in html or "cr-sitemap__hero" not in html or "cr-sitemap__panel" not in html:
         failures.append("missing Classic Reporters sitemap branding markers")
     if f">{len(expected_pages)}<" not in html or f">{len(expected_posts)}<" not in html:
         failures.append("dynamic page/post counts not rendered")
-    if "Tina content collections" not in live_text:
+    if "Updated automatically as new reporting is published." not in live_text:
         failures.append("dynamic source note missing")
 
     print("BACKEND_PAGE_COUNT", len(expected_pages))

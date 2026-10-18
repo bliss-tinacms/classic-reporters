@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { listBlogs, listPages } from '../lib/data';
 import { getBlogPermalink, getPageRouteSlug } from '../lib/permalinks';
+import '../styles/classic-sitemap.css';
 
 export const prerender = false;
 
@@ -83,83 +84,84 @@ const updated = new Date();
   ogDescription={description}
   canonicalUrl="/sitemap/"
 >
-  <main class="ffn-demo ffn-demo-sitemap" aria-labelledby="sitemap-title">
-    <header class="ph sitemap-ph">
-      <div class="w">
-        <div class="ph-in sitemap-ph__in">
-          <div class="ph-k"><b>Site index</b></div>
+  <main class="cr-sitemap" aria-labelledby="sitemap-title">
+    <header class="cr-sitemap__hero">
+      <div class="cr-sitemap__shell">
+        <div class="cr-sitemap__eyebrow"><span></span>Explore Classic Reporters</div>
+        <div class="cr-sitemap__hero-grid">
           <h1 id="sitemap-title">Sitemap</h1>
-          <p class="ph-d">A clean index of Classic Reporters public pages and published reporting, pulled dynamically from the Tina content collections.</p>
-          <div class="sitemap-metrics" aria-label="Sitemap totals">
-            <span><strong>{pageLinks.length}</strong> Pages</span>
-            <span><strong>{postLinks.length}</strong> Stories</span>
-            <span><strong>{totalLinks}</strong> Total links</span>
+          <div class="cr-sitemap__hero-copy">
+            <p>Every public page and published story, organized in one clear directory.</p>
+            <p class="cr-sitemap__updated">Updated automatically as new reporting is published.</p>
           </div>
+        </div>
+        <div class="cr-sitemap__metrics" aria-label="Sitemap totals">
+          <div><strong>{pageLinks.length}</strong><span>Pages</span></div>
+          <div><strong>{postLinks.length}</strong><span>Stories</span></div>
+          <div><strong>{totalLinks}</strong><span>Total links</span></div>
         </div>
       </div>
     </header>
 
-    <section class="sc sitemap-intro">
-      <div class="w sitemap-intro__grid">
-        <div>
-          <div class="eye"><i></i><span>Dynamic directory</span></div>
-          <h2 class="h2">Pages and reporting from the live backend</h2>
-        </div>
-        <div class="sitemap-note">
-          <p>This sitemap uses the same Tina-backed page and post loaders as the public website. When editors publish or hide pages and stories, this index follows the live content data.</p>
-          <p class="sitemap-note__meta">Last checked by the page render: <time datetime={updated.toISOString()}>{updated.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>{latestPost ? ` · Latest story: ${latestPost.title}` : ''}</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="sc alt sitemap-directory">
-      <div class="w sitemap-grid">
-        <section class="sitemap-panel" aria-labelledby="sitemap-pages-title">
-          <div class="sitemap-panel__top">
-            <span>Pages</span>
-            <b>{pageLinks.length} links</b>
+    <section class="cr-sitemap__directory" aria-labelledby="sitemap-directory-title">
+      <div class="cr-sitemap__shell">
+        <div class="cr-sitemap__section-head">
+          <div>
+            <div class="cr-sitemap__kicker">Site directory</div>
+            <h2 id="sitemap-directory-title">Everything in one place.</h2>
           </div>
-          <div class="sitemap-panel__body">
-            <div class="eye"><i></i><span>Public pages</span></div>
-            <h2 id="sitemap-pages-title" class="h2">Website pages</h2>
+          <div class="cr-sitemap__section-note">
+            <p>Browse our main pages or go directly to the latest reporting from the newsroom.</p>
+            <p><time datetime={updated.toISOString()}>Current as of {updated.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>{latestPost ? ` · Latest: ${latestPost.title}` : ''}</p>
+          </div>
+        </div>
+
+        <div class="cr-sitemap__grid">
+          <section class="cr-sitemap__panel cr-sitemap__panel--pages" aria-labelledby="sitemap-pages-title">
+            <div class="cr-sitemap__panel-head">
+              <div>
+                <span>Public pages</span>
+                <h2 id="sitemap-pages-title">Website pages</h2>
+              </div>
+              <b>{pageLinks.length}</b>
+            </div>
             {pageLinks.length > 0 ? (
-              <ul class="sitemap-list">
+              <ol class="cr-sitemap__list">
                 {pageLinks.map((item: SitemapLink, index: number) => (
                   <li>
-                    <span class="sitemap-list__number">{String(index + 1).padStart(2, '0')}</span>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
                     <a href={item.url}>{item.title}</a>
                   </li>
                 ))}
-              </ul>
+              </ol>
             ) : (
-              <p class="sitemap-empty">No public pages found.</p>
+              <p class="cr-sitemap__empty">No public pages found.</p>
             )}
-          </div>
-        </section>
+          </section>
 
-        <section class="sitemap-panel" aria-labelledby="sitemap-posts-title">
-          <div class="sitemap-panel__top">
-            <span>Stories</span>
-            <b>{postLinks.length} links</b>
-          </div>
-          <div class="sitemap-panel__body">
-            <div class="eye"><i></i><span>Published reporting</span></div>
-            <h2 id="sitemap-posts-title" class="h2">Latest stories</h2>
+          <section class="cr-sitemap__panel cr-sitemap__panel--stories" aria-labelledby="sitemap-posts-title">
+            <div class="cr-sitemap__panel-head">
+              <div>
+                <span>Published reporting</span>
+                <h2 id="sitemap-posts-title">Latest stories</h2>
+              </div>
+              <b>{postLinks.length}</b>
+            </div>
             {postLinks.length > 0 ? (
-              <ul class="sitemap-list sitemap-list--posts">
+              <ol class="cr-sitemap__list cr-sitemap__list--stories">
                 {postLinks.map((item: SitemapPostLink, index: number) => (
                   <li>
-                    <span class="sitemap-list__number">{String(index + 1).padStart(2, '0')}</span>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
                     <a href={item.url}>{item.title}</a>
                     {item.date && <time datetime={item.date.toISOString()}>{item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</time>}
                   </li>
                 ))}
-              </ul>
+              </ol>
             ) : (
-              <p class="sitemap-empty">No published stories found.</p>
+              <p class="cr-sitemap__empty">No published stories found.</p>
             )}
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </section>
   </main>
