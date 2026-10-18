@@ -19,7 +19,7 @@ const publicEmailPattern = /([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})/gi;
 const messageParts = (value: unknown) => String(value || '').split(publicEmailPattern);
 ---
 
-<main class="cr-contact-v2" data-cfemail-obfuscation="off">
+<main class="cr-contact-v2">
   <section class="cr-contact-v2__hero">
     <span class="cr-contact-v2__pill" data-tina-field={tinaField(hero, 'eyebrow')}><span></span>{hero.eyebrow}</span>
     <div class="cr-contact-v2__hero-grid">
@@ -56,7 +56,7 @@ const messageParts = (value: unknown) => String(value || '').split(publicEmailPa
           <p data-tina-field={tinaField(card, 'text')}>
             {messageParts(card.text).map((part, partIndex) =>
               partIndex % 2 === 1
-                ? <a href={`mailto:${part}`} data-cfemail-obfuscation="off">{part}</a>
+                ? <a href={`mailto:${part}`}>{part}</a>
                 : part
             )}
           </p>
@@ -69,7 +69,7 @@ const messageParts = (value: unknown) => String(value || '').split(publicEmailPa
     {inboxCards.map((card: any, index: number) => (
       <div class:list={['cr-contact-v2__inbox-card', index === 0 && 'is-dark']}>
         <div class="cr-contact-v2__eyebrow" data-tina-field={tinaField(card, 'title')}>{card.title}</div>
-        <a href={`mailto:${card.email}`} data-cfemail-obfuscation="off" data-tina-field={tinaField(card, 'email')}>{card.email}</a>
+        <a href={`mailto:${card.email}`} data-tina-field={tinaField(card, 'email')}>{card.email}</a>
         <p data-tina-field={tinaField(card, 'description')}>{card.description}</p>
         {card.note && (
           index === 0
