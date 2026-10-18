@@ -1,12 +1,33 @@
 {
   "title": "Primary Navigation",
   "items": [
-    { "label": "U.S. News", "href": "/us-news/" },
-    { "label": "World News", "href": "/world-news/" },
-    { "label": "Business", "href": "/business/" },
-    { "label": "Technology", "href": "/technology/" },
-    { "label": "Health", "href": "/health/" },
-    { "label": "Entertainment", "href": "/entertainment/" },
-    { "label": "Lifestyle", "href": "/lifestyle/" }
+    {
+      "label": "U.S. News [PUBLISHER-GATE-20261018]",
+      "href": "/us-news/"
+    },
+    {
+      "label": "World News",
+      "href": "/world-news/"
+    },
+    {
+      "label": "Business",
+      "href": "/business/"
+    },
+    {
+      "label": "Technology",
+      "href": "/technology/"
+    },
+    {
+      "label": "Health",
+      "href": "/health/"
+    },
+    {
+      "label": "Entertainment",
+      "href": "/entertainment/"
+    },
+    {
+      "label": "Lifestyle",
+      "href": "/lifestyle/"
+    }
   ]
 }
